@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import { EASE_OUT } from "@/lib/motion";
 
@@ -31,18 +32,25 @@ export default function Template({ children }: { children: React.ReactNode }) {
         transition={{ duration: 0.7, delay: 0.35, ease: CURTAIN_EASE }}
       >
         <motion.div
-          className="text-center"
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: [0, 1, 1, 0], y: 0 }}
+          className="flex flex-col items-center"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: [0, 1, 1, 0], scale: 1 }}
           transition={{ duration: 0.9, times: [0, 0.3, 0.7, 1], ease: "easeInOut" }}
         >
-          <p className="font-cond text-xs uppercase tracking-[0.4em] text-azzurro-chiaro">
-            dal 1981
-          </p>
-          <p className="mt-2 font-serif text-2xl font-semibold text-white sm:text-3xl">
-            Nazionale Italiana Cantanti
-          </p>
-          <span className="mx-auto mt-4 block h-px w-16 bg-oro" />
+          <Image
+            src="/images/logo-icon.png"
+            alt=""
+            width={72}
+            height={72}
+            className="h-16 w-auto object-contain"
+            priority
+          />
+          <motion.span
+            className="mt-4 block h-px bg-oro"
+            initial={{ width: 0 }}
+            animate={{ width: 64 }}
+            transition={{ duration: 0.7, ease: EASE_OUT }}
+          />
         </motion.div>
       </motion.div>
     </>

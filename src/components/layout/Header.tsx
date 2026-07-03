@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { nav } from "@/data/site";
 import { cn } from "@/lib/utils";
 import { MobileMenu } from "./MobileMenu";
 
@@ -39,39 +38,28 @@ export function Header() {
           />
         </Link>
 
-        <nav className="hidden items-center gap-6 lg:flex">
-          {nav.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="text-sm font-medium text-white/80 transition-colors hover:text-white"
-            >
-              {item.label}
-            </Link>
-          ))}
+        <div className="flex items-center gap-3 sm:gap-4">
           <Link
             href="/dona-ora"
-            className="rounded-full bg-oro px-5 py-2.5 text-sm font-semibold text-oro-scuro transition-colors hover:bg-[#f0c05a]"
+            className="hidden rounded-full bg-oro px-5 py-2.5 text-sm font-semibold text-oro-scuro transition-colors hover:bg-[#f0c05a] sm:inline-flex"
           >
             Dona ora
           </Link>
-        </nav>
-
-        <button
-          type="button"
-          onClick={() => setMenuOpen(true)}
-          aria-label="Apri il menu"
-          className="rounded-full p-2 text-white lg:hidden"
-        >
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden>
-            <path
-              d="M4 7h16M4 12h16M4 17h16"
-              stroke="currentColor"
-              strokeWidth="1.8"
-              strokeLinecap="round"
-            />
-          </svg>
-        </button>
+          <button
+            type="button"
+            onClick={() => setMenuOpen(true)}
+            aria-label="Apri il menu"
+            className="group flex items-center gap-2.5 rounded-full px-2 py-2 text-white transition-colors hover:text-azzurro-chiaro"
+          >
+            <span className="hidden font-cond text-sm uppercase tracking-[0.25em] sm:inline">
+              Menu
+            </span>
+            <span className="flex flex-col items-end gap-[5px]">
+              <span className="block h-[2px] w-6 bg-current transition-all duration-300 group-hover:w-7" />
+              <span className="block h-[2px] w-4 bg-current transition-all duration-300 group-hover:w-7" />
+            </span>
+          </button>
+        </div>
       </div>
 
       <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} />

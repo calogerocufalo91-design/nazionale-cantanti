@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { Libre_Bodoni, Public_Sans, Barlow_Condensed } from "next/font/google";
 import "./globals.css";
+import { SkipLink } from "@/components/layout/SkipLink";
+import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
+import { ScrollProgress } from "@/components/layout/ScrollProgress";
 
 const serif = Libre_Bodoni({
   subsets: ["latin"],
@@ -44,7 +48,13 @@ export default function RootLayout({
       className={`${serif.variable} ${sans.variable} ${cond.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-carta text-notte">
-        {children}
+        <SkipLink />
+        <ScrollProgress />
+        <Header />
+        <div id="contenuto" className="flex flex-1 flex-col">
+          {children}
+        </div>
+        <Footer />
       </body>
     </html>
   );

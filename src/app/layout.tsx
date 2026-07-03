@@ -38,6 +38,9 @@ export const metadata: Metadata = {
   },
   description:
     "Dal 1981 i cantanti italiani scendono in campo per la solidarietà. Storia, squadra, eventi e progetti della Nazionale Italiana Cantanti.",
+  // BOZZA: non indicizzabile dai motori di ricerca finché è un'anteprima privata.
+  // TODO_LANCIO: rimuovere questa riga quando il sito va online ufficialmente.
+  robots: { index: false, follow: false },
 };
 
 export default function RootLayout({

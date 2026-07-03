@@ -9,6 +9,7 @@ import {
   type Variants,
 } from "framer-motion";
 import { MagneticButton } from "@/components/motion/MagneticButton";
+import { Particles } from "@/components/motion/Particles";
 import { EASE_OUT } from "@/lib/motion";
 import { site } from "@/data/site";
 
@@ -41,6 +42,7 @@ export function Hero() {
       {/* luci da stadio in movimento */}
       <div className="hero-glow" aria-hidden />
       <div className="hero-grid" aria-hidden />
+      <Particles />
       <div
         aria-hidden
         className="absolute inset-0 bg-gradient-to-t from-notte via-transparent to-notte/40"

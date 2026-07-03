@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Container } from "@/components/layout/Container";
-import { ScrollReveal } from "@/components/motion/ScrollReveal";
+import { TunnelReveal } from "@/components/motion/TunnelReveal";
 import { Kicker } from "@/components/ui/Kicker";
 import { MagneticButton } from "@/components/motion/MagneticButton";
 import { nextEvent } from "@/data/events";
@@ -10,7 +10,7 @@ export function NextEvent() {
   return (
     <section className="bg-carta py-24 sm:py-28">
       <Container>
-        <ScrollReveal>
+        <TunnelReveal>
           <div className="grid items-center gap-10 overflow-hidden rounded-3xl bg-notte text-white lg:grid-cols-2">
             {e.image && (
               <div className="relative aspect-[4/3] lg:aspect-auto lg:h-full lg:min-h-[440px]">
@@ -61,7 +61,7 @@ export function NextEvent() {
               </div>
             </div>
           </div>
-        </ScrollReveal>
+        </TunnelReveal>
       </Container>
     </section>
   );

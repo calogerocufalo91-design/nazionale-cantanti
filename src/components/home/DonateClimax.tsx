@@ -1,13 +1,13 @@
 import Link from "next/link";
 import { Container } from "@/components/layout/Container";
-import { ScrollReveal } from "@/components/motion/ScrollReveal";
+import { TunnelReveal } from "@/components/motion/TunnelReveal";
 import { DonationCTA } from "@/components/content/DonationCTA";
 
 export function DonateClimax() {
   return (
     <section className="relative overflow-hidden bg-oro py-28 sm:py-36">
       <Container className="relative text-center">
-        <ScrollReveal>
+        <TunnelReveal>
           <p className="font-cond text-sm font-medium uppercase tracking-[0.3em] text-oro-scuro/70">
             Il tuo gesto conta
           </p>
@@ -27,7 +27,7 @@ export function DonateClimax() {
               Dona il 5×1000
             </Link>
           </div>
-        </ScrollReveal>
+        </TunnelReveal>
       </Container>
     </section>
   );

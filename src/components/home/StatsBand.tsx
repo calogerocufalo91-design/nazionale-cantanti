@@ -28,14 +28,18 @@ export function StatsBand() {
   return (
     <section className="bg-notte py-24 text-white sm:py-28">
       <Container>
-        <div className="grid gap-12 sm:grid-cols-3">
+        <div className="grid sm:grid-cols-3 sm:divide-x sm:divide-white/10">
           {stats.map((stat, i) => (
-            <ScrollReveal key={stat.label} delay={i * 0.08} className="text-center">
+            <ScrollReveal
+              key={stat.label}
+              delay={i * 0.08}
+              className="px-4 py-8 text-center sm:py-2"
+            >
               <div className="font-cond text-6xl font-semibold leading-none text-oro sm:text-7xl">
                 <AnimatedCounter to={stat.value} suffix={stat.suffix} />
                 {stat.note && <span className="align-super text-2xl text-oro/70">*</span>}
               </div>
-              <p className="mt-3 text-sm uppercase tracking-[0.2em] text-white/70">
+              <p className="mt-4 text-sm uppercase tracking-[0.2em] text-white/70">
                 {stat.label}
               </p>
             </ScrollReveal>

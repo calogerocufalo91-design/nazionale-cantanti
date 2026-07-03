@@ -9,7 +9,7 @@ export function SquadPreview() {
   const preview = players.slice(0, 8);
 
   return (
-    <section className="bg-white py-24 sm:py-28">
+    <section className="bg-carta py-24 sm:py-28">
       <Container>
         <ScrollReveal>
           <div className="flex flex-wrap items-end justify-between gap-6">

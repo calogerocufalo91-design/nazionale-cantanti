@@ -15,8 +15,8 @@ export default function Home() {
       <Manifesto />
       <StatsBand />
       <HistoryPreview />
-      <SquadPreview />
       <NextEvent />
+      <SquadPreview />
       <ImpactPreview />
       <PartnersStrip />
       <DonateClimax />

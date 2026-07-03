@@ -8,7 +8,7 @@ import { nextEvent } from "@/data/events";
 export function NextEvent() {
   const e = nextEvent;
   return (
-    <section className="bg-carta py-24 sm:py-28">
+    <section className="bg-white py-24 sm:py-28">
       <Container>
         <TunnelReveal>
           <div className="grid items-center gap-10 overflow-hidden rounded-3xl bg-notte text-white lg:grid-cols-2">

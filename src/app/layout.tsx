@@ -7,6 +7,7 @@ import { Footer } from "@/components/layout/Footer";
 import { ScrollProgress } from "@/components/layout/ScrollProgress";
 import { SmoothScroll } from "@/components/providers/SmoothScroll";
 import { IntroTunnel } from "@/components/intro/IntroTunnel";
+import { StructuredData } from "@/components/StructuredData";
 
 const serif = Libre_Bodoni({
   subsets: ["latin"],
@@ -50,6 +51,7 @@ export default function RootLayout({
       className={`${serif.variable} ${sans.variable} ${cond.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-carta text-notte">
+        <StructuredData />
         <SmoothScroll />
         <IntroTunnel />
         <SkipLink />

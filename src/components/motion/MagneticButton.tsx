@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 type MagneticButtonProps = {
   href: string;
   children: React.ReactNode;
-  variant?: "oro" | "ghost" | "azzurro";
+  variant?: "oro" | "ghost" | "azzurro" | "notte";
   className?: string;
   external?: boolean;
 };
@@ -19,6 +19,7 @@ const base =
 const variants = {
   oro: "bg-oro text-oro-scuro hover:bg-[#f0c05a]",
   azzurro: "bg-azzurro text-white hover:bg-[#0090e6]",
+  notte: "bg-notte text-white hover:bg-notte-800",
   ghost:
     "border border-white/40 text-white hover:bg-white/10 hover:border-white/70",
 };

@@ -27,11 +27,15 @@ export function Particles({ density = 0.00009 }: { density?: number }) {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    // Su mobile il canvas animato costa troppo (batteria/frame): lo saltiamo,
+    // hero-glow e griglia danno già profondità sufficiente.
+    if (window.matchMedia("(max-width: 767px)").matches) return;
+
     let dots: Dot[] = [];
     let raf = 0;
     let w = 0;
     let h = 0;
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
 
     const build = () => {
       const rect = canvas.getBoundingClientRect();
@@ -40,7 +44,7 @@ export function Particles({ density = 0.00009 }: { density?: number }) {
       canvas.width = w * dpr;
       canvas.height = h * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      const count = Math.min(160, Math.floor(w * h * density));
+      const count = Math.min(110, Math.floor(w * h * density));
       dots = Array.from({ length: count }, () => ({
         x: Math.random() * w,
         y: Math.random() * h,
@@ -75,8 +79,15 @@ export function Particles({ density = 0.00009 }: { density?: number }) {
       raf = requestAnimationFrame(draw);
     };
 
-    build();
-    draw();
+    // Avvio ritardato: non rubiamo tempo al primo render (migliora TBT/LCP).
+    const start = () => {
+      build();
+      draw();
+    };
+    const useIdle = typeof window.requestIdleCallback === "function";
+    const idleId = useIdle
+      ? window.requestIdleCallback(start, { timeout: 900 })
+      : window.setTimeout(start, 400);
 
     const onResize = () => build();
     window.addEventListener("resize", onResize);
@@ -88,6 +99,8 @@ export function Particles({ density = 0.00009 }: { density?: number }) {
 
     return () => {
       cancelAnimationFrame(raf);
+      if (useIdle) window.cancelIdleCallback(idleId);
+      else window.clearTimeout(idleId);
       window.removeEventListener("resize", onResize);
       document.removeEventListener("visibilitychange", onVisibility);
     };

@@ -8,6 +8,7 @@ const STATIC_ROUTES = [
   "/la-storia",
   "/la-squadra",
   "/eventi",
+  "/archivio-partite",
   "/news",
   "/progetti",
   "/impatto",

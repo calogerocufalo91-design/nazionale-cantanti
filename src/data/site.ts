@@ -28,6 +28,7 @@ export const nav = [
   { label: "La Storia", href: "/la-storia" },
   { label: "La Squadra", href: "/la-squadra" },
   { label: "Eventi", href: "/eventi" },
+  { label: "Archivio Partite", href: "/archivio-partite" },
   { label: "News", href: "/news" },
   { label: "Gallery", href: "/gallery" },
   { label: "Progetti", href: "/progetti" },

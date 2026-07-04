@@ -50,6 +50,14 @@ export default function StoriaPage() {
           <div className="mt-12">
             <Timeline editions={partitaDelCuoreEditions} />
           </div>
+          <div className="mt-8">
+            <Link
+              href="/archivio-partite"
+              className="text-sm font-medium text-azzurro underline-offset-4 transition-colors hover:text-notte hover:underline"
+            >
+              Sfoglia l&apos;archivio completo delle edizioni →
+            </Link>
+          </div>
         </Container>
       </section>
 

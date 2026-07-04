@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { Container } from "@/components/layout/Container";
 import { PageHero } from "@/components/content/PageHero";
 import { ScrollReveal } from "@/components/motion/ScrollReveal";
@@ -34,17 +35,33 @@ export default function ProgettiPage() {
               <ScrollReveal
                 key={project.title}
                 delay={i * 0.08}
-                className="flex flex-col rounded-2xl border border-notte/10 bg-white p-7"
+                className="flex flex-col overflow-hidden rounded-2xl border border-notte/10 bg-white"
               >
-                <span className="font-cond text-3xl font-semibold text-oro">
-                  0{i + 1}
-                </span>
-                <h3 className="mt-4 font-serif text-xl font-semibold text-notte">
-                  {project.title}
-                </h3>
-                <p className="mt-3 text-sm leading-relaxed text-notte/70">
-                  {project.description}
-                </p>
+                <div className="relative h-48 bg-notte">
+                  {project.image ? (
+                    <Image
+                      src={project.image}
+                      alt={project.title}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 380px"
+                      className="object-cover"
+                    />
+                  ) : (
+                    <div className="flex h-full items-center justify-center">
+                      <span className="font-cond text-5xl font-semibold text-oro/80">
+                        0{i + 1}
+                      </span>
+                    </div>
+                  )}
+                </div>
+                <div className="flex flex-1 flex-col p-7">
+                  <h3 className="font-serif text-xl font-semibold text-notte">
+                    {project.title}
+                  </h3>
+                  <p className="mt-3 text-sm leading-relaxed text-notte/70">
+                    {project.description}
+                  </p>
+                </div>
               </ScrollReveal>
             ))}
           </div>

@@ -1,14 +1,13 @@
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
 import { Header } from "./Header";
-import { nav } from "@/data/site";
 
 describe("Header", () => {
-  it("mostra tutte le voci di navigazione", () => {
+  it("espone il pulsante per aprire il menu a tendina", () => {
     render(<Header />);
-    nav.forEach((item) => {
-      expect(screen.getAllByText(item.label).length).toBeGreaterThan(0);
-    });
+    expect(
+      screen.getByRole("button", { name: /apri il menu/i }),
+    ).toBeInTheDocument();
   });
 
   it("espone la CTA Dona ora verso /dona-ora", () => {

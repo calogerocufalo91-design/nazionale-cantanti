@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { Container } from "@/components/layout/Container";
 import { PageHero } from "@/components/content/PageHero";
 import { ScrollReveal } from "@/components/motion/ScrollReveal";
@@ -60,14 +61,27 @@ export default function ImpattoPage() {
             {projects.map((project) => (
               <div
                 key={project.title}
-                className="rounded-2xl border border-notte/10 bg-carta p-7"
+                className="flex flex-col overflow-hidden rounded-2xl border border-notte/10 bg-carta"
               >
-                <h3 className="font-serif text-xl font-semibold text-notte">
-                  {project.title}
-                </h3>
-                <p className="mt-3 text-sm leading-relaxed text-notte/70">
-                  {project.description}
-                </p>
+                {project.image && (
+                  <div className="relative h-44">
+                    <Image
+                      src={project.image}
+                      alt={project.title}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 380px"
+                      className="object-cover"
+                    />
+                  </div>
+                )}
+                <div className="flex flex-1 flex-col p-7">
+                  <h3 className="font-serif text-xl font-semibold text-notte">
+                    {project.title}
+                  </h3>
+                  <p className="mt-3 text-sm leading-relaxed text-notte/70">
+                    {project.description}
+                  </p>
+                </div>
               </div>
             ))}
           </div>

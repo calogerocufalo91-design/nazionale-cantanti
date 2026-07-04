@@ -13,6 +13,9 @@ export const nicUnited = {
 export type Project = {
   title: string;
   description: string;
+  // Foto reale dell'iniziativa (dagli articoli News). Dove non esiste uno scatto
+  // reale della specifica iniziativa il campo resta omesso: niente foto inventata.
+  image?: string;
 };
 
 export const projects: Project[] = [
@@ -20,11 +23,13 @@ export const projects: Project[] = [
     title: "Chitarre Eko per le scuole di musica",
     description:
       "Donazione di chitarre Eko a scuole di musica e realtà locali, tra cui la Scuola di Musica \"Giacomo Moro\" di Viadana.",
+    image: "/images/news/due-chitarre-eko-scuola-musica-giacomo-moro.jpg",
   },
   {
     title: "Sostegno alle case famiglia",
     description:
       "Chitarre donate alla Casa Famiglia di Lagonegro, nel nome di Pino Mango.",
+    image: "/images/news/chitarre-eko-casa-famiglia-lagonegro.jpeg",
   },
   {
     title: "Inclusione attraverso la musica",

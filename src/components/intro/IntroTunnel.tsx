@@ -1,25 +1,26 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import Image from "next/image";
+import { motion, useReducedMotion } from "framer-motion";
 import { EASE_OUT } from "@/lib/motion";
 
-const WORDS = ["1981", "Musica", "Campo", "Cuore", "Solidarietà"];
 const SESSION_KEY = "nic-intro-seen";
-const BRAND_STEP = WORDS.length;
-const DONE_STEP = WORDS.length + 1;
+const CURTAIN_EASE = [0.76, 0, 0.24, 1] as const;
 
+// Intro "Sipario": una linea oro si disegna al centro, il marchio emerge sopra
+// di essa, poi lo schermo si apre in due come un sipario rivelando il sito.
+// step: -1 non avviata, 0 linea, 1 marchio, 2 apertura, 3 finita.
 export function IntroTunnel() {
   const reduce = useReducedMotion();
-  // step: -1 non avviato, 0..WORDS.length-1 parole, WORDS.length brand, DONE_STEP finito.
   const [step, setStep] = useState(-1);
 
-  // Avvio: decide (rAF, quindi setState asincrono) se riprodurre o saltare.
+  // Avvio (asincrono via rAF): decide se riprodurre o saltare.
   useEffect(() => {
     const raf = requestAnimationFrame(() => {
       const seen = window.sessionStorage.getItem(SESSION_KEY);
       if (reduce || seen) {
-        setStep(DONE_STEP);
+        setStep(3);
         return;
       }
       document.body.style.overflow = "hidden";
@@ -31,87 +32,110 @@ export function IntroTunnel() {
     };
   }, [reduce]);
 
-  // Avanzamento della sequenza: setState solo dentro il timer (asincrono).
+  // Avanzamento a tempo: setState solo dentro i timer.
   useEffect(() => {
-    if (step < 0 || step >= DONE_STEP) return;
-    const delay = step === BRAND_STEP ? 1600 : 620;
-    const t = setTimeout(() => setStep((s) => s + 1), delay);
+    if (step < 0 || step >= 3) return;
+    const delays = [800, 1600, 850];
+    const t = setTimeout(() => setStep((s) => s + 1), delays[step]);
     return () => clearTimeout(t);
   }, [step]);
 
-  // Chiusura: sblocca scroll e memorizza (side-effect esterni, nessun setState).
+  // Chiusura: memorizza e sblocca lo scroll.
   useEffect(() => {
-    if (step >= DONE_STEP) {
+    if (step >= 3) {
       window.sessionStorage.setItem(SESSION_KEY, "1");
       document.body.style.overflow = "";
     }
   }, [step]);
 
-  if (step < 0 || step >= DONE_STEP) return null;
+  if (step < 0 || step >= 3) return null;
 
-  const skip = () => setStep(DONE_STEP);
+  const open = step === 2;
+  const skip = () => setStep(3);
 
   return (
-    <AnimatePresence>
+    <div className="fixed inset-0 z-[100]" role="presentation">
+      {/* pannello superiore del sipario */}
       <motion.div
-        className="fixed inset-0 z-[100] flex items-center justify-center overflow-hidden bg-notte"
-        style={{ perspective: 900 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.6 }}
+        className="absolute inset-x-0 top-0 h-1/2 overflow-hidden bg-notte"
+        animate={open ? { y: "-101%" } : { y: 0 }}
+        transition={{ duration: 0.85, ease: CURTAIN_EASE }}
       >
-        <div className="tunnel-rays" aria-hidden />
         <div
           aria-hidden
-          className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(79,169,224,0.18),transparent_60%)]"
+          className="absolute inset-0 bg-[radial-gradient(80%_120%_at_50%_100%,rgba(0,114,187,0.25),transparent_70%)]"
+        />
+      </motion.div>
+
+      {/* pannello inferiore del sipario */}
+      <motion.div
+        className="absolute inset-x-0 bottom-0 h-1/2 overflow-hidden bg-notte"
+        animate={open ? { y: "101%" } : { y: 0 }}
+        transition={{ duration: 0.85, ease: CURTAIN_EASE }}
+      >
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-[radial-gradient(80%_120%_at_50%_0%,rgba(0,114,187,0.18),transparent_70%)]"
+        />
+      </motion.div>
+
+      {/* contenuto centrale, a cavallo della linea di apertura */}
+      <motion.div
+        className="absolute inset-0 flex flex-col items-center justify-center px-6"
+        animate={open ? { opacity: 0, scale: 0.96 } : { opacity: 1, scale: 1 }}
+        transition={{ duration: 0.4, ease: EASE_OUT }}
+      >
+        <motion.div
+          className="flex flex-col items-center"
+          initial={{ opacity: 0, y: 18 }}
+          animate={
+            step >= 1 ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }
+          }
+          transition={{ duration: 0.7, ease: EASE_OUT }}
+        >
+          <Image
+            src="/images/logo-icon.png"
+            alt=""
+            width={72}
+            height={72}
+            className="h-14 w-auto object-contain sm:h-16"
+            priority
+          />
+          <p className="mt-5 text-center font-serif text-2xl font-semibold text-white sm:text-4xl">
+            Nazionale Italiana Cantanti
+          </p>
+        </motion.div>
+
+        {/* la linea oro: il "filo" lungo cui si aprirà il sipario */}
+        <motion.span
+          aria-hidden
+          className="mt-7 block h-px w-56 bg-oro sm:w-72"
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: 1 }}
+          transition={{ duration: 0.75, ease: CURTAIN_EASE }}
         />
 
-        {step < BRAND_STEP && (
-          <AnimatePresence mode="popLayout">
-            <motion.span
-              key={WORDS[step]}
-              initial={{ scale: 0.35, opacity: 0, z: -300 }}
-              animate={{ scale: 1.15, opacity: 1, z: 0 }}
-              exit={{ scale: 3.2, opacity: 0, z: 400 }}
-              transition={{ duration: 0.62, ease: EASE_OUT }}
-              className="font-serif text-6xl font-semibold text-white sm:text-8xl"
-            >
-              {WORDS[step]}
-            </motion.span>
-          </AnimatePresence>
-        )}
-
-        {step === BRAND_STEP && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.7, ease: EASE_OUT }}
-            className="px-6 text-center"
-          >
-            <p className="font-cond text-sm uppercase tracking-[0.4em] text-azzurro-chiaro">
-              dal 1981
-            </p>
-            <p className="mt-4 font-serif text-4xl font-semibold text-white sm:text-6xl">
-              Nazionale Italiana Cantanti
-            </p>
-            <div className="mx-auto mt-6 h-[3px] w-24 overflow-hidden rounded-full bg-white/15">
-              <motion.div
-                className="h-full bg-oro"
-                initial={{ width: 0 }}
-                animate={{ width: "100%" }}
-                transition={{ duration: 1.3, ease: "easeInOut" }}
-              />
-            </div>
-          </motion.div>
-        )}
-
-        <button
-          type="button"
-          onClick={skip}
-          className="absolute bottom-8 right-8 text-xs uppercase tracking-[0.25em] text-white/50 transition-colors hover:text-white"
+        <motion.p
+          className="mt-6 font-cond text-xs uppercase tracking-[0.5em] text-azzurro-chiaro"
+          initial={{ opacity: 0, letterSpacing: "0.2em" }}
+          animate={
+            step >= 1
+              ? { opacity: 1, letterSpacing: "0.5em" }
+              : { opacity: 0 }
+          }
+          transition={{ duration: 0.9, ease: EASE_OUT }}
         >
-          Salta intro
-        </button>
+          dal 1981 · musica · sport · solidarietà
+        </motion.p>
       </motion.div>
-    </AnimatePresence>
+
+      <button
+        type="button"
+        onClick={skip}
+        className="absolute bottom-8 right-8 text-xs uppercase tracking-[0.25em] text-white/50 transition-colors hover:text-white"
+      >
+        Salta intro
+      </button>
+    </div>
   );
 }

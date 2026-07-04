@@ -7,7 +7,7 @@ import { partners } from "@/data/partners";
 
 export function PartnersStrip() {
   return (
-    <section className="bg-carta py-24 sm:py-28">
+    <section className="bg-white py-24 sm:py-28">
       <Container>
         <ScrollReveal>
           <div className="flex flex-wrap items-end justify-between gap-6">

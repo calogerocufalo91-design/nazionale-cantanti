@@ -1,4 +1,5 @@
 import { Hero } from "@/components/home/Hero";
+import { TickerBand } from "@/components/home/TickerBand";
 import { Manifesto } from "@/components/home/Manifesto";
 import { StatsBand } from "@/components/home/StatsBand";
 import { HistoryPreview } from "@/components/home/HistoryPreview";
@@ -12,6 +13,7 @@ export default function Home() {
   return (
     <>
       <Hero />
+      <TickerBand />
       <Manifesto />
       <StatsBand />
       <HistoryPreview />

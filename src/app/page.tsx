@@ -4,6 +4,7 @@ import { StatsBand } from "@/components/home/StatsBand";
 import { HistoryPreview } from "@/components/home/HistoryPreview";
 import { SquadPreview } from "@/components/home/SquadPreview";
 import { NextEvent } from "@/components/home/NextEvent";
+import { SocialFeed } from "@/components/home/SocialFeed";
 import { PartnersStrip } from "@/components/home/PartnersStrip";
 import { DonateClimax } from "@/components/home/DonateClimax";
 
@@ -15,6 +16,7 @@ export default function Home() {
       <StatsBand />
       <HistoryPreview />
       <NextEvent />
+      <SocialFeed />
       <SquadPreview />
       <PartnersStrip />
       <DonateClimax />

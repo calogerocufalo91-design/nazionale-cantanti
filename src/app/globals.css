@@ -94,6 +94,45 @@ body {
   }
 }
 
+/* --- Pellicola di leggende: marquee che scorre --- */
+.marquee-row {
+  display: flex;
+  overflow: hidden;
+  width: 100%;
+}
+.marquee-track {
+  display: flex;
+  flex: none;
+  gap: 1.25rem;
+  padding-right: 1.25rem;
+  min-width: 100%;
+}
+.marquee-l {
+  animation: marqueeL 55s linear infinite;
+}
+.marquee-r {
+  animation: marqueeR 55s linear infinite;
+}
+.marquee-row:hover .marquee-track {
+  animation-play-state: paused;
+}
+@keyframes marqueeL {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+@keyframes marqueeR {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

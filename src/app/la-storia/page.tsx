@@ -27,6 +27,7 @@ export default function StoriaPage() {
         title="Dal 1981, una storia di solidarietà"
         subtitle={historyIntro.body}
         crumbs={[{ label: "La Storia" }]}
+        slides={galleryImages.map((g) => ({ src: g.src, alt: g.alt }))}
       />
 
       <section className="bg-carta py-20 sm:py-24">

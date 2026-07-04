@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import {
   AnimatePresence,
@@ -39,13 +40,17 @@ export function MobileMenu({
     };
     document.addEventListener("keydown", onKey);
     document.body.style.overflow = "hidden";
+    window.dispatchEvent(new Event("nic:lenis-stop"));
     return () => {
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
+      window.dispatchEvent(new Event("nic:lenis-start"));
     };
   }, [open, onClose]);
 
-  return (
+  if (typeof document === "undefined") return null;
+
+  return createPortal(
     <AnimatePresence>
       {open && (
         <motion.div
@@ -95,7 +100,7 @@ export function MobileMenu({
             animate={reduce ? undefined : "show"}
           >
             <ul>
-              {items.map((item, i) => (
+              {items.map((item) => (
                 <motion.li
                   key={item.href}
                   variants={reduce ? undefined : itemVariants}
@@ -103,14 +108,15 @@ export function MobileMenu({
                   <Link
                     href={item.href}
                     onClick={onClose}
-                    className="group flex items-baseline gap-4 border-b border-white/10 py-4"
+                    className="group flex items-center gap-4 border-b border-white/10 py-4"
                   >
-                    <span className="w-8 font-cond text-sm text-oro/80">
-                      {String(i).padStart(2, "0")}
-                    </span>
                     <span className="font-serif text-3xl font-semibold text-white transition-all duration-300 group-hover:translate-x-2 group-hover:text-azzurro-chiaro sm:text-4xl">
                       {item.label}
                     </span>
+                    <span
+                      aria-hidden
+                      className="h-px flex-1 origin-left scale-x-0 bg-oro/40 transition-transform duration-300 group-hover:scale-x-100"
+                    />
                   </Link>
                 </motion.li>
               ))}
@@ -157,6 +163,7 @@ export function MobileMenu({
           </motion.div>
         </motion.div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body,
   );
 }

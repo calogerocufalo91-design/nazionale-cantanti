@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Container } from "@/components/layout/Container";
 import { Kicker } from "@/components/ui/Kicker";
+import { PhotoSlideshow, type Slide } from "./PhotoSlideshow";
 import { Breadcrumbs, type Crumb } from "./Breadcrumbs";
 
 // Le foto usate qui sono reali ma sfocate sotto un overlay azzurro/notte: sfondo
@@ -12,6 +13,7 @@ export function PageHero({
   crumbs,
   poster,
   posterAlt,
+  slides,
 }: {
   kicker?: string;
   title: string;
@@ -19,10 +21,15 @@ export function PageHero({
   crumbs: Crumb[];
   poster?: string;
   posterAlt?: string;
+  slides?: Slide[];
 }) {
   return (
     <section className="relative overflow-hidden bg-notte pb-16 pt-36 text-white sm:pb-20 sm:pt-44">
-      {poster ? (
+      {slides && slides.length > 0 ? (
+        <div className="absolute inset-0 opacity-40">
+          <PhotoSlideshow slides={slides} />
+        </div>
+      ) : poster ? (
         <Image
           src={poster}
           alt={posterAlt ?? ""}

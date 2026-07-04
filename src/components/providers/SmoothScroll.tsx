@@ -24,8 +24,17 @@ export function SmoothScroll() {
     };
     raf = requestAnimationFrame(loop);
 
+    // Il menu (o altri overlay) possono fermare/riavviare lo smooth-scroll,
+    // così non scorre dietro il pannello aperto.
+    const onStop = () => lenis.stop();
+    const onStart = () => lenis.start();
+    window.addEventListener("nic:lenis-stop", onStop);
+    window.addEventListener("nic:lenis-start", onStart);
+
     return () => {
       cancelAnimationFrame(raf);
+      window.removeEventListener("nic:lenis-stop", onStop);
+      window.removeEventListener("nic:lenis-start", onStart);
       lenis.destroy();
     };
   }, [reduce]);

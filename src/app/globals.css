@@ -133,6 +133,19 @@ body {
   }
 }
 
+/* --- Ken Burns lento per il carosello foto --- */
+.slideshow-kb {
+  animation: slideshowKb 9s ease-out both;
+}
+@keyframes slideshowKb {
+  from {
+    transform: scale(1.12);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

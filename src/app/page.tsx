@@ -4,7 +4,6 @@ import { StatsBand } from "@/components/home/StatsBand";
 import { HistoryPreview } from "@/components/home/HistoryPreview";
 import { SquadPreview } from "@/components/home/SquadPreview";
 import { NextEvent } from "@/components/home/NextEvent";
-import { ImpactPreview } from "@/components/home/ImpactPreview";
 import { PartnersStrip } from "@/components/home/PartnersStrip";
 import { DonateClimax } from "@/components/home/DonateClimax";
 
@@ -17,7 +16,6 @@ export default function Home() {
       <HistoryPreview />
       <NextEvent />
       <SquadPreview />
-      <ImpactPreview />
       <PartnersStrip />
       <DonateClimax />
     </>

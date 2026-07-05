@@ -46,15 +46,30 @@ export function Footer() {
           </div>
 
           <nav aria-label="Mappa del sito" className="grid grid-cols-2 gap-x-6 gap-y-2 text-sm">
-            {nav.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="text-white/70 transition-colors hover:text-white"
-              >
-                {item.label}
-              </Link>
-            ))}
+            {nav.map((item) =>
+              item.external ? (
+                <a
+                  key={item.href}
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-white/70 transition-colors hover:text-white"
+                >
+                  {item.label}
+                  <span aria-hidden className="ml-1 text-oro/70">
+                    ↗
+                  </span>
+                </a>
+              ) : (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="text-white/70 transition-colors hover:text-white"
+                >
+                  {item.label}
+                </Link>
+              ),
+            )}
           </nav>
 
           <div>

@@ -9,10 +9,10 @@ import {
   useReducedMotion,
   type Variants,
 } from "framer-motion";
-import { nav, site } from "@/data/site";
+import { nav, site, type NavItem } from "@/data/site";
 import { EASE_OUT } from "@/lib/motion";
 
-const items = [{ label: "Home", href: "/" }, ...nav];
+const items: NavItem[] = [{ label: "Home", href: "/" }, ...nav];
 
 const listVariants: Variants = {
   hidden: {},
@@ -100,26 +100,48 @@ export function MobileMenu({
             animate={reduce ? undefined : "show"}
           >
             <ul>
-              {items.map((item) => (
-                <motion.li
-                  key={item.href}
-                  variants={reduce ? undefined : itemVariants}
-                >
-                  <Link
-                    href={item.href}
-                    onClick={onClose}
-                    className="group flex items-center gap-4 border-b border-white/10 py-4"
-                  >
+              {items.map((item) => {
+                const inner = (
+                  <>
                     <span className="font-serif text-3xl font-semibold text-white transition-all duration-300 group-hover:translate-x-2 group-hover:text-azzurro-chiaro sm:text-4xl">
                       {item.label}
+                      {item.external && (
+                        <span aria-hidden className="ml-3 align-super text-lg text-oro/80">
+                          ↗
+                        </span>
+                      )}
                     </span>
                     <span
                       aria-hidden
                       className="h-px flex-1 origin-left scale-x-0 bg-oro/40 transition-transform duration-300 group-hover:scale-x-100"
                     />
-                  </Link>
-                </motion.li>
-              ))}
+                  </>
+                );
+                const cls =
+                  "group flex items-center gap-4 border-b border-white/10 py-4";
+                return (
+                  <motion.li
+                    key={item.href}
+                    variants={reduce ? undefined : itemVariants}
+                  >
+                    {item.external ? (
+                      <a
+                        href={item.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={onClose}
+                        className={cls}
+                      >
+                        {inner}
+                      </a>
+                    ) : (
+                      <Link href={item.href} onClick={onClose} className={cls}>
+                        {inner}
+                      </Link>
+                    )}
+                  </motion.li>
+                );
+              })}
             </ul>
           </motion.nav>
 

@@ -24,14 +24,26 @@ export const site = {
   phone: null as string | null,
 };
 
-export const nav = [
+export type NavItem = {
+  label: string;
+  href: string;
+  // Voce che apre un sito/pagina esterna in una nuova scheda (es. NIC United,
+  // che come sul sito attuale porta direttamente alla pagina dedicata).
+  external?: boolean;
+};
+
+export const nav: NavItem[] = [
   { label: "La Storia", href: "/la-storia" },
   { label: "La Squadra", href: "/la-squadra" },
   { label: "Eventi", href: "/eventi" },
   { label: "Archivio Partite", href: "/archivio-partite" },
   { label: "News", href: "/news" },
   { label: "Gallery", href: "/gallery" },
-  { label: "Progetti", href: "/progetti" },
+  {
+    label: "NIC United",
+    href: "https://www.nazionalecantanti.it/nic-united/",
+    external: true,
+  },
   { label: "Partner", href: "/partner" },
   { label: "Stampa", href: "/stampa" },
   { label: "Contatti", href: "/contatti" },

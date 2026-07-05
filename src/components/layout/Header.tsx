@@ -31,9 +31,9 @@ export function Header() {
           <Image
             src="/images/logo.png"
             alt="Nazionale Italiana Cantanti"
-            width={180}
-            height={54}
-            className="h-11 w-auto object-contain"
+            width={240}
+            height={72}
+            className="h-12 w-auto object-contain sm:h-14"
             priority
           />
         </Link>

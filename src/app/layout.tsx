@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Libre_Bodoni, Public_Sans, Barlow_Condensed } from "next/font/google";
 import "./globals.css";
 import { SkipLink } from "@/components/layout/SkipLink";
@@ -41,6 +41,11 @@ export const metadata: Metadata = {
   // BOZZA: non indicizzabile dai motori di ricerca finché è un'anteprima privata.
   // TODO_LANCIO: rimuovere questa riga quando il sito va online ufficialmente.
   robots: { index: false, follow: false },
+};
+
+// Barra del browser mobile (Android/iOS) nel blu notte del brand.
+export const viewport: Viewport = {
+  themeColor: "#0b1d2e",
 };
 
 export default function RootLayout({

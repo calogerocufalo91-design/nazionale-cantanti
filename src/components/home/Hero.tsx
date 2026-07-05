@@ -37,7 +37,7 @@ export function Hero() {
   return (
     <section
       ref={ref}
-      className="relative flex min-h-screen items-center overflow-hidden bg-notte"
+      className="relative flex min-h-[100svh] items-center overflow-hidden bg-notte"
     >
       {/* luci da stadio in movimento */}
       <div className="hero-glow" aria-hidden />
@@ -118,7 +118,7 @@ export function Hero() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.4 }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/40"
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/40 [@media(max-height:700px)]:hidden"
           aria-hidden
         >
           <motion.div

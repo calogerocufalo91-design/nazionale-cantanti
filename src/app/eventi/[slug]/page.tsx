@@ -5,9 +5,11 @@ import { notFound } from "next/navigation";
 import { Container } from "@/components/layout/Container";
 import { Breadcrumbs } from "@/components/content/Breadcrumbs";
 import { DonationCTA } from "@/components/content/DonationCTA";
-import { nextEvent, archivedEvents, type EventItem } from "@/data/events";
+import { nextEvent, type EventItem } from "@/data/events";
 
-const allEvents: EventItem[] = [nextEvent, ...archivedEvents];
+// Solo gli eventi correnti hanno una pagina dettaglio; lo storico vive
+// nell'Archivio Partite (dati forniti dal cliente).
+const allEvents: EventItem[] = [nextEvent];
 
 export function generateStaticParams() {
   return allEvents.map((e) => ({ slug: e.slug }));

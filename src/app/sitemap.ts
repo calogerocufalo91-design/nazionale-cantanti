@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { site } from "@/data/site";
 import { newsArticles } from "@/data/news";
-import { nextEvent, archivedEvents } from "@/data/events";
+import { nextEvent } from "@/data/events";
 
 const STATIC_ROUTES = [
   "",
@@ -30,7 +30,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified: now,
   }));
 
-  const eventEntries = [nextEvent, ...archivedEvents].map((e) => ({
+  const eventEntries = [nextEvent].map((e) => ({
     url: `${base}/eventi/${e.slug}`,
     lastModified: now,
   }));

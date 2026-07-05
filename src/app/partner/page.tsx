@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { Container } from "@/components/layout/Container";
 import { PageHero } from "@/components/content/PageHero";
 import { ScrollReveal } from "@/components/motion/ScrollReveal";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { PartnerCarousel } from "@/components/content/PartnerCarousel";
+import { AnimatedCounter } from "@/components/motion/AnimatedCounter";
 import { partners } from "@/data/partners";
 import { site } from "@/data/site";
 import { pageHeroes } from "@/data/media";
@@ -56,7 +58,8 @@ export default function PartnerPage() {
                 delay={i * 0.08}
                 className="rounded-2xl border border-notte/10 bg-white p-7"
               >
-                <h3 className="font-serif text-xl font-semibold text-notte">
+                <span aria-hidden className="block h-1 w-10 rounded-full bg-oro" />
+                <h3 className="mt-5 font-serif text-xl font-semibold text-notte">
                   {v.title}
                 </h3>
                 <p className="mt-3 text-sm leading-relaxed text-notte/70">
@@ -66,6 +69,68 @@ export default function PartnerPage() {
             ))}
           </div>
         </Container>
+      </section>
+
+      <section className="bg-notte py-20 text-white sm:py-24">
+        <Container>
+          <div className="grid gap-10 text-center sm:grid-cols-2 sm:gap-6 lg:grid-cols-4 lg:divide-x lg:divide-white/10">
+            <ScrollReveal className="px-4">
+              <p className="font-cond text-5xl font-semibold text-oro">1981</p>
+              <p className="mt-3 text-sm uppercase tracking-[0.18em] text-white/70">
+                l&apos;anno in cui tutto è iniziato
+              </p>
+            </ScrollReveal>
+            <ScrollReveal delay={0.07} className="px-4">
+              <p className="font-cond text-5xl font-semibold text-oro">
+                <AnimatedCounter to={35} suffix="ª" />
+              </p>
+              <p className="mt-3 text-sm uppercase tracking-[0.18em] text-white/70">
+                edizione della Partita del Cuore
+              </p>
+            </ScrollReveal>
+            <ScrollReveal delay={0.14} className="px-4">
+              <p className="font-cond text-5xl font-semibold text-oro">
+                <AnimatedCounter to={640} suffix="+" />
+              </p>
+              <p className="mt-3 text-sm uppercase tracking-[0.18em] text-white/70">
+                partite benefiche disputate
+              </p>
+            </ScrollReveal>
+            <ScrollReveal delay={0.21} className="px-4">
+              <p className="font-cond text-5xl font-semibold text-oro">Rai 1</p>
+              <p className="mt-3 text-sm uppercase tracking-[0.18em] text-white/70">
+                la diretta del prossimo evento
+              </p>
+            </ScrollReveal>
+          </div>
+        </Container>
+      </section>
+
+      <section className="relative overflow-hidden">
+        <div className="relative h-[380px] sm:h-[440px]">
+          <Image
+            src="/images/news/givova-terra-santa-filo-di-pace.jpg"
+            alt="La Nazionale Cantanti con lo sponsor tecnico Givova"
+            fill
+            sizes="100vw"
+            className="object-cover"
+          />
+          <div
+            aria-hidden
+            className="absolute inset-0 bg-gradient-to-t from-notte via-notte/40 to-transparent"
+          />
+          <div className="absolute inset-x-0 bottom-0">
+            <Container className="pb-10">
+              <p className="font-cond text-sm uppercase tracking-[0.25em] text-azzurro-chiaro">
+                Una partnership che lascia il segno
+              </p>
+              <p className="mt-2 max-w-2xl font-serif text-2xl font-semibold text-white sm:text-3xl">
+                Con lo sponsor tecnico Givova: un filo di pace che attraversa
+                il tempo.
+              </p>
+            </Container>
+          </div>
+        </div>
       </section>
 
       <section className="bg-white py-20 sm:py-24">

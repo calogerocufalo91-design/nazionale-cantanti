@@ -1,26 +1,21 @@
 import { Container } from "@/components/layout/Container";
 import { ScrollReveal } from "@/components/motion/ScrollReveal";
 import { AnimatedCounter } from "@/components/motion/AnimatedCounter";
-import { historyStats } from "@/data/history";
+import { site } from "@/data/site";
+
+// Numeri correnti: "oltre 640 partite benefiche" è il dato fornito dal cliente
+// con l'archivio (2026); gli anni di attività sono calcolati dalla fondazione.
+const anniAttivita = new Date().getFullYear() - site.foundingYear;
 
 type Stat = {
   value: number;
   suffix?: string;
   label: string;
-  note?: boolean;
 };
 
 const stats: Stat[] = [
-  {
-    value: historyStats.lastVerified.incontri,
-    label: "incontri disputati",
-    note: true,
-  },
-  {
-    value: historyStats.lastVerified.anniAttivita,
-    label: "anni di attività",
-    note: true,
-  },
+  { value: 640, suffix: "+", label: "partite benefiche" },
+  { value: anniAttivita, label: "anni di attività" },
   { value: 35, suffix: "ª", label: "Partita del Cuore" },
 ];
 
@@ -37,7 +32,6 @@ export function StatsBand() {
             >
               <div className="font-cond text-6xl font-semibold leading-none text-oro sm:text-7xl">
                 <AnimatedCounter to={stat.value} suffix={stat.suffix} />
-                {stat.note && <span className="align-super text-2xl text-oro/70">*</span>}
               </div>
               <p className="mt-4 text-sm uppercase tracking-[0.2em] text-white/70">
                 {stat.label}
@@ -45,10 +39,6 @@ export function StatsBand() {
             </ScrollReveal>
           ))}
         </div>
-        <p className="mt-12 text-center text-xs text-white/40">
-          * dati di attività aggiornati al {historyStats.lastVerified.sourceYear},
-          in corso di aggiornamento.
-        </p>
       </Container>
     </section>
   );

@@ -8,6 +8,7 @@ import { ScrollProgress } from "@/components/layout/ScrollProgress";
 import { SmoothScroll } from "@/components/providers/SmoothScroll";
 import { IntroTunnel } from "@/components/intro/IntroTunnel";
 import { StructuredData } from "@/components/StructuredData";
+import { NicChat } from "@/components/NicChat";
 
 const serif = Libre_Bodoni({
   subsets: ["latin"],
@@ -69,6 +70,7 @@ export default function RootLayout({
           {children}
         </div>
         <Footer />
+        <NicChat />
       </body>
     </html>
   );

@@ -7,18 +7,19 @@ vi.mock("framer-motion", async (orig) => {
 });
 
 import { StatsBand } from "./StatsBand";
-import { historyStats } from "@/data/history";
+import { site } from "@/data/site";
 
 describe("StatsBand", () => {
-  it("mostra il numero reale di incontri (dato 2023)", () => {
+  it("mostra il dato corrente fornito dal cliente (640+ partite benefiche)", () => {
     render(<StatsBand />);
-    expect(
-      screen.getByText(new RegExp(String(historyStats.lastVerified.incontri))),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/640/)).toBeInTheDocument();
+    expect(screen.getByText(/partite benefiche/i)).toBeInTheDocument();
   });
 
-  it("dichiara l'anno-fonte 2023 (niente dato spacciato per oggi)", () => {
+  it("gli anni di attività sono calcolati dalla fondazione (nessun dato stantio)", () => {
     render(<StatsBand />);
-    expect(screen.getByText(/2023/)).toBeInTheDocument();
+    const anni = new Date().getFullYear() - site.foundingYear;
+    expect(screen.getByText(new RegExp(String(anni)))).toBeInTheDocument();
+    expect(screen.queryByText(/aggiornati al 2023/)).not.toBeInTheDocument();
   });
 });

@@ -24,11 +24,13 @@ export function IntroTunnel() {
         return;
       }
       document.body.style.overflow = "hidden";
+      window.dispatchEvent(new Event("nic:lenis-stop"));
       setStep(0);
     });
     return () => {
       cancelAnimationFrame(raf);
       document.body.style.overflow = "";
+      window.dispatchEvent(new Event("nic:lenis-start"));
     };
   }, [reduce]);
 
@@ -45,6 +47,7 @@ export function IntroTunnel() {
     if (step >= 3) {
       window.sessionStorage.setItem(SESSION_KEY, "1");
       document.body.style.overflow = "";
+      window.dispatchEvent(new Event("nic:lenis-start"));
     }
   }, [step]);
 

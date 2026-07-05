@@ -15,8 +15,21 @@
   --font-cond: var(--font-barlow), var(--font-public), sans-serif;
 }
 
-html {
-  scroll-behavior: smooth;
+/* Lo smooth scrolling è gestito da Lenis (vedi SmoothScroll): il CSS
+   scroll-behavior NON va attivato insieme, i due si contendono lo scroll
+   e causano blocchi/salti. Classi ufficiali Lenis: */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
 }
 
 body {

@@ -20,9 +20,11 @@ export function GalleryLightbox({ images }: { images: GalleryImage[] }) {
     };
     document.addEventListener("keydown", onKey);
     document.body.style.overflow = "hidden";
+    window.dispatchEvent(new Event("nic:lenis-stop"));
     return () => {
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
+      window.dispatchEvent(new Event("nic:lenis-start"));
     };
   }, [active, images.length]);
 

@@ -15,6 +15,9 @@ export function SmoothScroll() {
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
       touchMultiplier: 1.6,
+      // Gli anchor link (#...) li gestisce Lenis stesso: senza questo, i salti
+      // alle ancore combattono con lo scroll animato e lo bloccano.
+      anchors: true,
     });
 
     let raf = 0;

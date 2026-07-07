@@ -9,6 +9,7 @@ import {
   type ArchivioItem,
 } from "@/lib/archivio-view";
 import { MappaCuore } from "@/components/shared/MappaCuore";
+import { StadioPanel } from "@/components/shared/StadioPanel";
 
 const CATEGORIA_STILI: Record<
   ArchivioItem["categoria"]["tone"],
@@ -148,17 +149,16 @@ export function ArchivioEsplora() {
   return (
     <div>
       {/* Mappa delle città */}
-      <section className="bg-notte py-16 text-white sm:py-20">
-        <div className="mx-auto grid w-full max-w-6xl items-center gap-10 px-6 sm:px-8 lg:grid-cols-[auto_1fr]">
-          <div className="mx-auto w-full max-w-[380px]">
-            <MappaCuore
-              places={places}
-              selected={cittaSelezionata}
-              onSelect={selezionaCitta}
-              hoveredCity={hoverCitta}
-              onHover={setHoverCitta}
-            />
-          </div>
+      <section className="relative overflow-hidden bg-notte py-16 text-white sm:py-20">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 opacity-60"
+          style={{
+            background:
+              "radial-gradient(55% 45% at 20% 15%, rgba(0,114,187,0.28), transparent 65%), radial-gradient(45% 40% at 90% 85%, rgba(232,178,58,0.10), transparent 60%)",
+          }}
+        />
+        <div className="relative mx-auto w-full max-w-6xl px-6 sm:px-8">
           <div>
             <p className="font-cond text-sm font-medium uppercase tracking-[0.28em] text-azzurro-chiaro">
               La mappa del cuore
@@ -168,30 +168,65 @@ export function ArchivioEsplora() {
             </h3>
             <p className="mt-4 max-w-xl text-white/70">
               Ogni punto è una città che ha ospitato la Nazionale Cantanti: più
-              è grande, più partite si sono giocate lì. Tocca una città per
-              vedere i suoi eventi.
+              è grande, più partite si sono giocate lì. Scegli una città per
+              vedere i suoi eventi in archivio.
             </p>
-            <ul className="mt-6 flex flex-wrap gap-2">
-              {places.slice(0, 12).map((p) => (
-                <li key={p.city}>
-                  <button
-                    type="button"
-                    onClick={() => selezionaCitta(p.city)}
-                    onMouseEnter={() => setHoverCitta(p.city)}
-                    onMouseLeave={() => setHoverCitta(null)}
-                    onFocus={() => setHoverCitta(p.city)}
-                    onBlur={() => setHoverCitta(null)}
-                    aria-pressed={cittaSelezionata === p.city}
-                    className={`whitespace-nowrap rounded-full border px-3.5 py-1.5 text-xs font-medium transition-all duration-200 ${
-                      cittaSelezionata === p.city || hoverCitta === p.city
-                        ? "border-oro bg-oro text-oro-scuro shadow-[0_0_0_4px_rgba(232,178,58,0.15)]"
-                        : "border-white/18 text-white/80 hover:border-oro/60 hover:text-oro"
-                    }`}
-                  >
-                    {p.city} · {p.count}
-                  </button>
-                </li>
-              ))}
+          </div>
+
+          <div className="mt-10 grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(340px,400px)] lg:gap-10">
+            <div className="relative overflow-hidden rounded-3xl border border-white/8 bg-gradient-to-b from-notte-800/40 to-notte/30 p-6 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.6)] backdrop-blur-sm sm:p-8">
+              <div className="mx-auto w-full max-w-[480px]">
+                <MappaCuore
+                  places={places}
+                  activeCity={hoverCitta ?? cittaSelezionata}
+                  onActivate={setHoverCitta}
+                  onSelect={selezionaCitta}
+                  showMarkerLabel
+                />
+              </div>
+            </div>
+
+            <div className="lg:sticky lg:top-24 lg:self-start">
+              <StadioPanel
+                place={
+                  places.find(
+                    (p) => p.city === (hoverCitta ?? cittaSelezionata),
+                  ) ?? null
+                }
+                totalCities={places.length}
+              />
+            </div>
+          </div>
+
+          <div className="mt-8">
+            <p className="font-cond text-[10px] font-semibold uppercase tracking-[0.24em] text-white/45">
+              Scegli una città per filtrare l&apos;archivio
+            </p>
+            <ul className="mt-3 flex flex-wrap gap-2">
+              {places.map((p) => {
+                const active =
+                  cittaSelezionata === p.city || hoverCitta === p.city;
+                return (
+                  <li key={p.city}>
+                    <button
+                      type="button"
+                      onClick={() => selezionaCitta(p.city)}
+                      onMouseEnter={() => setHoverCitta(p.city)}
+                      onMouseLeave={() => setHoverCitta(null)}
+                      onFocus={() => setHoverCitta(p.city)}
+                      onBlur={() => setHoverCitta(null)}
+                      aria-pressed={cittaSelezionata === p.city}
+                      className={`whitespace-nowrap rounded-full border px-3.5 py-1.5 text-xs font-medium transition-all duration-200 ${
+                        active
+                          ? "border-oro bg-oro text-oro-scuro shadow-[0_0_0_4px_rgba(232,178,58,0.15)]"
+                          : "border-white/18 text-white/80 hover:border-oro/60 hover:text-oro"
+                      }`}
+                    >
+                      {p.city} · {p.count}
+                    </button>
+                  </li>
+                );
+              })}
             </ul>
           </div>
         </div>

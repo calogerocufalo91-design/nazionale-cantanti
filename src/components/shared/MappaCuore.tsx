@@ -1,13 +1,8 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
-import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import {
-  stadioInfo,
-  type CittaGiocata,
-  type StadioInfo,
-} from "@/lib/archivio-view";
+import type { CittaGiocata } from "@/lib/archivio-view";
 
 // Sagoma STILIZZATA dell'Italia (poligono semplificato, non cartografia esatta)
 // proiettata da coordinate reali. I punti città usano le stesse coordinate,
@@ -60,61 +55,64 @@ function toPath(points: [number, number][]): string {
 
 const VIEW_W = 460;
 const VIEW_H = 570;
-const PLACEHOLDER_URL = "/images/stadi/placeholder-stadio.svg";
 
 type MappaCuoreProps = {
   places: CittaGiocata[];
-  selected?: string | null;
+  /** Città attiva (hover o selezionata) controllata dal parent. */
+  activeCity?: string | null;
+  /** Emesso su hover marker, focus, o click. Passa null quando l'utente esce. */
+  onActivate?: (city: string | null) => void;
+  /** Emesso su click/enter — utile per navigazione o filtro persistente. */
   onSelect?: (city: string) => void;
-  hoveredCity?: string | null;
-  onHover?: (city: string | null) => void;
+  /** Mostra una piccola etichetta con il nome della città sopra il marker attivo. */
+  showMarkerLabel?: boolean;
   className?: string;
 };
 
+/**
+ * Mappa stilizzata dell'Italia con i marker delle città. NON contiene la card
+ * dettagli: il parent deve renderizzare un pannello separato (StadioPanel) in
+ * una zona dedicata del layout. Questo evita sovrapposizioni con pillole/testi.
+ */
 export function MappaCuore({
   places,
-  selected = null,
+  activeCity = null,
+  onActivate,
   onSelect,
-  hoveredCity = null,
-  onHover,
+  showMarkerLabel = true,
   className,
 }: MappaCuoreProps) {
   const reduce = useReducedMotion();
   const wrapRef = useRef<HTMLDivElement>(null);
-  const [hoverInternal, setHoverInternal] = useState<string | null>(null);
-  // Città "aperta" tramite tap (mobile) o click esplicito
-  const [openCity, setOpenCity] = useState<string | null>(null);
+  const [labelBox, setLabelBox] = useState<{ w: number; h: number } | null>(
+    null,
+  );
+  const labelTextRef = useRef<SVGTextElement>(null);
 
-  const activeCity = hoveredCity ?? hoverInternal ?? openCity ?? selected;
+  const active = places.find((p) => p.city === activeCity) ?? null;
 
+  // Misura il testo per dimensionare il rettangolo del mini-tooltip.
   useEffect(() => {
-    if (!openCity) return;
-    const handler = (e: MouseEvent | TouchEvent) => {
-      if (!wrapRef.current?.contains(e.target as Node)) setOpenCity(null);
-    };
-    document.addEventListener("mousedown", handler);
-    document.addEventListener("touchstart", handler);
-    return () => {
-      document.removeEventListener("mousedown", handler);
-      document.removeEventListener("touchstart", handler);
-    };
-  }, [openCity]);
-
-  const setHover = (city: string | null) => {
-    setHoverInternal(city);
-    onHover?.(city);
-  };
-
-  const activePlace = places.find((p) => p.city === activeCity) ?? null;
-  const activeInfo = activePlace ? stadioInfo(activePlace.city) : null;
+    if (!showMarkerLabel || !active || !labelTextRef.current) {
+      setLabelBox(null);
+      return;
+    }
+    const bbox = labelTextRef.current.getBBox();
+    setLabelBox({ w: bbox.width + 16, h: bbox.height + 8 });
+  }, [active, showMarkerLabel]);
 
   return (
-    <div ref={wrapRef} className={`relative ${className ?? ""}`}>
+    <div
+      ref={wrapRef}
+      className={`relative ${className ?? ""}`}
+      onMouseLeave={() => onActivate?.(null)}
+    >
       <svg
         viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
         role="img"
         aria-label="Mappa stilizzata dell'Italia con le città in cui la Nazionale Cantanti ha giocato"
-        className="h-auto w-full"
+        className="block h-auto w-full"
+        preserveAspectRatio="xMidYMid meet"
       >
         <defs>
           <filter
@@ -124,9 +122,9 @@ export function MappaCuore({
             width="140%"
             height="140%"
           >
-            <feGaussianBlur stdDeviation="3.5" result="blur" />
-            <feOffset dy="2" result="off" />
-            <feFlood floodColor="#0072BB" floodOpacity="0.45" />
+            <feGaussianBlur stdDeviation="5" result="blur" />
+            <feOffset dy="4" result="off" />
+            <feFlood floodColor="#0072BB" floodOpacity="0.5" />
             <feComposite in2="off" operator="in" result="shadow" />
             <feMerge>
               <feMergeNode in="shadow" />
@@ -134,10 +132,30 @@ export function MappaCuore({
             </feMerge>
           </filter>
           <linearGradient id="italia-fill" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor="#4fa9e0" stopOpacity="0.14" />
-            <stop offset="1" stopColor="#4fa9e0" stopOpacity="0.05" />
+            <stop offset="0" stopColor="#4fa9e0" stopOpacity="0.18" />
+            <stop offset="1" stopColor="#4fa9e0" stopOpacity="0.06" />
           </linearGradient>
+          <radialGradient id="italia-halo" cx="50%" cy="45%" r="60%">
+            <stop offset="0" stopColor="#4fa9e0" stopOpacity="0.22" />
+            <stop offset="1" stopColor="#4fa9e0" stopOpacity="0" />
+          </radialGradient>
+          <filter id="marker-glow" x="-100%" y="-100%" width="300%" height="300%">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
         </defs>
+
+        {/* Alone di luce dietro la penisola */}
+        <ellipse
+          cx={VIEW_W / 2}
+          cy={VIEW_H / 2}
+          rx={VIEW_W * 0.55}
+          ry={VIEW_H * 0.45}
+          fill="url(#italia-halo)"
+        />
 
         <g filter="url(#italia-shadow)">
           {[MAINLAND, SICILIA, SARDEGNA].map((shape, i) => (
@@ -145,8 +163,8 @@ export function MappaCuore({
               key={i}
               d={toPath(shape)}
               fill="url(#italia-fill)"
-              stroke="rgba(79,169,224,0.65)"
-              strokeWidth="1.2"
+              stroke="rgba(79,169,224,0.7)"
+              strokeWidth="1.4"
               strokeLinejoin="round"
               strokeLinecap="round"
             />
@@ -155,8 +173,8 @@ export function MappaCuore({
 
         {places.map((p, i) => {
           const [cx, cy] = project(p.lon, p.lat);
-          const r = 3.5 + Math.min(p.count, 8) * 0.9;
-          const active = activeCity === p.city;
+          const r = 4 + Math.min(p.count, 8) * 1.1;
+          const isActive = activeCity === p.city;
 
           return (
             <motion.g
@@ -165,183 +183,116 @@ export function MappaCuore({
               whileInView={reduce ? undefined : { opacity: 1, scale: 1 }}
               viewport={{ once: true, margin: "-60px" }}
               transition={{
-                delay: reduce ? 0 : Math.min(i * 0.035, 0.9),
+                delay: reduce ? 0 : Math.min(i * 0.04, 1),
                 type: "spring",
-                stiffness: 260,
+                stiffness: 240,
                 damping: 20,
               }}
               style={{ transformOrigin: `${cx}px ${cy}px` }}
             >
+              {/* Ring esterno morbido */}
               <circle
                 cx={cx}
                 cy={cy}
-                r={r + 5}
+                r={r + (isActive ? 10 : 6)}
                 fill={
-                  active ? "rgba(232,178,58,0.45)" : "rgba(232,178,58,0.18)"
+                  isActive
+                    ? "rgba(232,178,58,0.35)"
+                    : "rgba(232,178,58,0.15)"
                 }
-                className={active ? "pin-pulse-strong" : "pin-pulse"}
+                className={isActive ? "pin-pulse-strong" : "pin-pulse"}
                 pointerEvents="none"
               />
+              {/* Marker interno */}
               <circle
                 cx={cx}
                 cy={cy}
-                r={r}
-                fill={active ? "#f0c05a" : "#E8B23A"}
+                r={isActive ? r + 1.5 : r}
+                fill={isActive ? "#f4cd6b" : "#E8B23A"}
                 stroke="#0B1D2E"
-                strokeWidth="1"
+                strokeWidth="1.2"
+                filter={isActive ? "url(#marker-glow)" : undefined}
                 tabIndex={0}
                 role="button"
-                aria-label={`${p.city}: ${p.count} ${p.count === 1 ? "evento" : "eventi"}`}
+                aria-label={`${p.city}: ${p.count} ${
+                  p.count === 1 ? "evento" : "eventi"
+                }`}
+                aria-pressed={isActive}
                 onClick={() => {
                   onSelect?.(p.city);
-                  setOpenCity((c) => (c === p.city ? null : p.city));
+                  onActivate?.(p.city);
                 }}
-                onMouseEnter={() => setHover(p.city)}
-                onMouseLeave={() => setHover(null)}
-                onFocus={() => setHover(p.city)}
-                onBlur={() => setHover(null)}
+                onMouseEnter={() => onActivate?.(p.city)}
+                onFocus={() => onActivate?.(p.city)}
+                onBlur={() => onActivate?.(null)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === " ") {
                     e.preventDefault();
                     onSelect?.(p.city);
-                    setOpenCity((c) => (c === p.city ? null : p.city));
+                    onActivate?.(p.city);
                   }
                 }}
                 className="cursor-pointer transition-transform duration-200 hover:scale-125 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-oro"
                 style={{ transformOrigin: `${cx}px ${cy}px` }}
               >
-                <title>{`${p.city} — ${p.count} ${p.count === 1 ? "evento" : "eventi"}`}</title>
+                <title>{`${p.city} — ${p.count} ${
+                  p.count === 1 ? "evento" : "eventi"
+                }`}</title>
               </circle>
             </motion.g>
           );
         })}
+
+        {/* Mini etichetta nome città sopra il marker attivo.
+            Solo desktop e a discrezione del parent (showMarkerLabel). */}
+        {showMarkerLabel && active && (() => {
+          const [cx, cy] = project(active.lon, active.lat);
+          const w = labelBox?.w ?? 90;
+          const h = labelBox?.h ?? 22;
+          const flipY = cy < 50;
+          const ry = flipY ? cy + 22 : cy - 22 - h;
+          return (
+            <g pointerEvents="none">
+              {/* Linea di collegamento marker → etichetta */}
+              <line
+                x1={cx}
+                y1={cy}
+                x2={cx}
+                y2={flipY ? ry - 4 : ry + h + 4}
+                stroke="#E8B23A"
+                strokeOpacity="0.55"
+                strokeWidth="1"
+                strokeDasharray="2 3"
+              />
+              <rect
+                x={cx - w / 2}
+                y={ry}
+                width={w}
+                height={h}
+                rx="6"
+                fill="#0B1D2E"
+                fillOpacity="0.92"
+                stroke="#E8B23A"
+                strokeOpacity="0.55"
+                strokeWidth="1"
+              />
+              <text
+                ref={labelTextRef}
+                x={cx}
+                y={ry + h / 2}
+                textAnchor="middle"
+                dominantBaseline="central"
+                fill="#f4cd6b"
+                fontSize="11"
+                fontWeight="600"
+                style={{ letterSpacing: "0.04em" }}
+              >
+                {active.city.toUpperCase()}
+              </text>
+            </g>
+          );
+        })()}
       </svg>
-
-      {activePlace && activeInfo && (
-        <StadioCard
-          key={activeInfo.city}
-          place={activePlace}
-          info={activeInfo}
-        />
-      )}
     </div>
-  );
-}
-
-function StadioCard({
-  place,
-  info,
-}: {
-  place: CittaGiocata;
-  info: StadioInfo;
-}) {
-  const [cx, cy] = project(place.lon, place.lat);
-  const flipX = cx / VIEW_W > 0.55;
-  const flipY = cy / VIEW_H > 0.72;
-  // Fallback chain silenzioso: foto reale → visual generativo → placeholder.
-  // Lo state si resetta da solo grazie al key={info.city} sul parent.
-  const [photoFailed, setPhotoFailed] = useState(false);
-  const [visualFailed, setVisualFailed] = useState(false);
-  const showRealPhoto =
-    info.visualStatus === "licensed" && !!info.imageUrl && !photoFailed;
-  const visualSrc = visualFailed ? PLACEHOLDER_URL : info.visualUrl;
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 4, scale: 0.98 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ duration: 0.22, ease: [0.22, 0.61, 0.36, 1] }}
-      className="pointer-events-none absolute z-30 w-60 overflow-hidden rounded-2xl border border-white/12 bg-notte/95 text-left shadow-[0_22px_50px_-12px_rgba(0,0,0,0.7)] ring-1 ring-oro/15 backdrop-blur-md sm:w-64"
-      style={{
-        left: `${(cx / VIEW_W) * 100}%`,
-        top: `${(cy / VIEW_H) * 100}%`,
-        transform: `translate(${flipX ? "calc(-100% - 14px)" : "14px"}, ${flipY ? "calc(-100% - 10px)" : "-22%"})`,
-      }}
-      aria-hidden
-    >
-      <div className="relative aspect-[16/10] w-full overflow-hidden bg-notte-800">
-        {showRealPhoto ? (
-          <Image
-            src={info.imageUrl!}
-            alt={info.imageAlt}
-            fill
-            sizes="(max-width: 640px) 90vw, 260px"
-            className="object-cover"
-            onError={() => setPhotoFailed(true)}
-          />
-        ) : (
-          // Visual istituzionale (SVG generativo originale) — non è una fotografia.
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={visualSrc}
-            alt={info.imageAlt}
-            className="h-full w-full object-cover"
-            loading="lazy"
-            onError={() => setVisualFailed(true)}
-          />
-        )}
-        <div className="absolute inset-0 bg-gradient-to-t from-notte/80 via-notte/10 to-transparent" />
-        <div className="absolute left-2 top-2">
-          {showRealPhoto ? (
-            <span className="rounded-full bg-oro px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-oro-scuro shadow-sm">
-              Foto ufficiale
-            </span>
-          ) : (
-            <span className="rounded-full bg-azzurro-chiaro/20 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-azzurro-chiaro ring-1 ring-azzurro-chiaro/40">
-              Visual istituzionale
-            </span>
-          )}
-        </div>
-      </div>
-
-      <div className="p-3.5">
-        <p className="font-serif text-[15px] font-semibold leading-tight text-white">
-          {info.stadiumName}
-        </p>
-        <p className="mt-0.5 text-xs text-white/70">{info.city}</p>
-
-        <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] font-medium">
-          <span className="text-oro">
-            {info.matchesCount}{" "}
-            {info.matchesCount === 1 ? "partita" : "partite"}
-          </span>
-          {info.latestYear ? (
-            <>
-              <span aria-hidden className="text-white/30">
-                ·
-              </span>
-              <span className="text-white/70">
-                ultima {info.latestYear}
-              </span>
-            </>
-          ) : null}
-        </div>
-
-        {info.events.length > 0 && (
-          <ul className="mt-2.5 space-y-1 border-t border-white/8 pt-2 text-[11px] leading-snug text-white/70">
-            {info.events.slice(0, 2).map((e) => (
-              <li key={`${e.year}-${e.title}`} className="truncate">
-                <span className="font-cond text-white/50">
-                  {e.year || "—"}
-                </span>{" "}
-                <span className="text-white/85">{e.title}</span>
-              </li>
-            ))}
-          </ul>
-        )}
-
-        {!showRealPhoto ? (
-          <p className="mt-2.5 text-[10px] italic leading-snug text-white/45">
-            Illustrazione istituzionale · rappresentazione non fotografica.
-          </p>
-        ) : info.imageCredit || info.imageLicense ? (
-          <p className="mt-2.5 text-[10px] leading-snug text-white/50">
-            {info.imageCredit}
-            {info.imageCredit && info.imageLicense ? " · " : ""}
-            {info.imageLicense}
-          </p>
-        ) : null}
-      </div>
-    </motion.div>
   );
 }

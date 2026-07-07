@@ -1,5 +1,6 @@
 import { Hero } from "@/components/home/Hero";
 import { Manifesto } from "@/components/home/Manifesto";
+import { MappaCuoreSection } from "@/components/home/MappaCuoreSection";
 import { StatsBand } from "@/components/home/StatsBand";
 import { HistoryPreview } from "@/components/home/HistoryPreview";
 import { SquadPreview } from "@/components/home/SquadPreview";
@@ -13,6 +14,7 @@ export default function Home() {
     <>
       <Hero />
       <Manifesto />
+      <MappaCuoreSection />
       <StatsBand />
       <HistoryPreview />
       <NextEvent />

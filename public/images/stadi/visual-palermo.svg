@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200" role="img" aria-label="Visual istituzionale ispirato a Palermo">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#12314a"/>
+      <stop offset="1" stop-color="#0b1d2e"/>
+    </linearGradient>
+    <radialGradient id="sun" cx="0.7" cy="0.7" r="0.5">
+      <stop offset="0" stop-color="#E8B23A" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#E8B23A" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#4fa9e0" stroke-opacity="0.08" stroke-width="0.6"/>
+    </pattern>
+    <style>
+      @keyframes nicPulse { 0%,100% { opacity: 0.55; } 50% { opacity: 1; } }
+      .pulse { animation: nicPulse 3.4s ease-in-out infinite; }
+      @media (prefers-reduced-motion: reduce) { .pulse { animation: none; } }
+    </style>
+  </defs>
+  <rect width="320" height="200" fill="url(#sky)"/>
+  <rect width="320" height="200" fill="url(#grid)"/>
+  <rect width="320" height="200" fill="url(#sun)"/>
+
+  <!-- Sole mediterraneo grande basso -->
+  <circle cx="220" cy="150" r="52" fill="#E8B23A" fill-opacity="0.22"/>
+  <circle cx="220" cy="150" r="30" fill="#E8B23A" fill-opacity="0.35"/>
+  <circle cx="220" cy="150" r="14" fill="#E8B23A" fill-opacity="0.55" class="pulse"/>
+
+  <!-- Palme astratte (linee curve + ventaglio semplice, non riproduzione botanica) -->
+  <g stroke="#4fa9e0" stroke-opacity="0.55" stroke-width="1.1" fill="none">
+    <path d="M 68 168 Q 66 132 72 100"/>
+    <g stroke-opacity="0.4">
+      <path d="M 72 100 Q 52 92 40 96"/>
+      <path d="M 72 100 Q 92 92 104 98"/>
+      <path d="M 72 100 Q 58 84 50 74"/>
+      <path d="M 72 100 Q 84 84 90 74"/>
+      <path d="M 72 100 Q 72 88 70 78"/>
+    </g>
+  </g>
+  <g stroke="#4fa9e0" stroke-opacity="0.35" stroke-width="0.9" fill="none">
+    <path d="M 108 172 Q 110 148 106 128"/>
+    <path d="M 106 128 Q 92 124 84 128" stroke-opacity="0.28"/>
+    <path d="M 106 128 Q 120 124 128 128" stroke-opacity="0.28"/>
+  </g>
+
+  <!-- Orizzonte marino -->
+  <g stroke="#4fa9e0" stroke-opacity="0.4" stroke-width="0.9" fill="none">
+    <path d="M 0 180 Q 60 176 130 180 T 320 180"/>
+    <path d="M 0 190 Q 60 186 130 190 T 320 190" stroke-opacity="0.22"/>
+  </g>
+  <line x1="0" y1="0.5" x2="320" y2="0.5" stroke="#E8B23A" stroke-opacity="0.4" stroke-width="1"/>
+</svg>

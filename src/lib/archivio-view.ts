@@ -203,3 +203,195 @@ export function cittaGiocate(items: ArchivioItem[]): CittaGiocata[] {
   }
   return out.sort((a, b) => b.count - a.count);
 }
+
+// Foto realmente presenti nel progetto, legate a un evento in quella città.
+// Città non elencate qui semplicemente non mostrano una foto (nessuna invenzione).
+export const CITTA_FOTO: Record<string, { src: string; alt: string }> = {
+  "L'Aquila": {
+    src: "/images/events/partita-del-cuore-2026.jpeg",
+    alt: "Locandina Partita del Cuore 2026 — Stadio Gran Sasso, L'Aquila",
+  },
+  "Desenzano del Garda": {
+    src: "/images/news/triangolare-mondiale-desenzano.jpeg",
+    alt: "Triangolare mondiale a Desenzano del Garda",
+  },
+  Viadana: {
+    src: "/images/news/grande-cuore-viadana.jpg",
+    alt: "Grande Cuore Viadana",
+  },
+  Lagonegro: {
+    src: "/images/news/chitarre-eko-casa-famiglia-lagonegro.jpeg",
+    alt: "Consegna chitarre Eko alla Casa Famiglia di Lagonegro",
+  },
+  Formigine: {
+    src: "/images/news/moreno-donadoni-capocannoniere.jpeg",
+    alt: "Moreno Donadoni capocannoniere a Formigine",
+  },
+};
+
+export type DettagliCitta = {
+  city: string;
+  count: number;
+  firstYear: number;
+  lastYear: number;
+  stadiums: string[];
+  ultimoEvento: {
+    title: string;
+    year: number;
+    dateLabel: string;
+    result: string;
+  } | null;
+  foto: { src: string; alt: string } | null;
+};
+
+export function slugCitta(city: string): string {
+  return normalizza(city).replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+}
+
+// Path atteso della foto stadio per una città reale/autorizzata.
+// Convenzione: /images/stadi/stadio-<slug>.jpg
+export function stadioFotoUrl(city: string): string {
+  return `/images/stadi/stadio-${slugCitta(city)}.jpg`;
+}
+
+// COPYRIGHT — Non scaricare mai foto da Google, Instagram, giornali, siti
+// sportivi, mappe o siti terzi senza licenza. Usare solo: foto proprie,
+// foto ufficiali autorizzate, foto con licenza compatibile e credito corretto,
+// oppure visual generativi originali (SVG) prodotti da noi.
+//
+// Per attivare una foto reale autorizzata su una città:
+//   1) Salva il file in public/images/stadi/stadio-<slug>.jpg (o .webp)
+//   2) Aggiungi qui una voce con status "licensed" e, se serve, credit + license.
+//
+// Ogni città ha di default un "visual istituzionale" (SVG generativo originale,
+// non fotografico), non una foto reale — la card userà quello finché non
+// arriva una foto autorizzata.
+export type VisualStatus = "generated" | "licensed" | "missing";
+
+// Elenco città per cui esiste un visual generativo dedicato in
+// public/images/stadi/visual-<slug>.svg. Le città non elencate qui ricevono
+// automaticamente placeholder-stadio.svg come visual istituzionale generico.
+const VISUAL_DEDICATI = new Set<string>([
+  "Roma",
+  "Torino",
+  "Verona",
+  "Firenze",
+  "Palermo",
+  "Napoli",
+  "Milano",
+  "Genova",
+  "Bologna",
+  "Cagliari",
+  "L'Aquila",
+  "Pontremoli",
+]);
+
+export const STADIO_IMMAGINI: Record<
+  string,
+  { status: "licensed"; credit?: string; license?: string }
+> = {
+  // esempio (tenere commentato finché il file non è caricato):
+  // "Roma": { status: "licensed", credit: "© Foto Autore", license: "Uso concesso NIC 2026" },
+};
+
+export function visualStadioUrl(city: string): string {
+  if (VISUAL_DEDICATI.has(city)) {
+    return `/images/stadi/visual-${slugCitta(city)}.svg`;
+  }
+  return "/images/stadi/placeholder-stadio.svg";
+}
+
+export type StadioEvento = {
+  year: number;
+  title: string;
+  dateLabel: string;
+  result: string;
+};
+
+export type StadioInfo = {
+  city: string;
+  slug: string;
+  stadiumName: string;
+  matchesCount: number;
+  latestYear: number | null;
+  events: StadioEvento[];
+  // Foto reale autorizzata (solo se visualStatus === "licensed").
+  imageUrl: string | null;
+  // Visual istituzionale/generativo di fallback: sempre valorizzato.
+  visualUrl: string;
+  imageAlt: string;
+  visualStatus: VisualStatus;
+  // Etichetta del badge sulla card ("Foto ufficiale", "Visual istituzionale", …).
+  visualLabel: string;
+  imageCredit: string;
+  imageLicense: string;
+};
+
+export function stadioInfo(city: string): StadioInfo {
+  const d = dettagliCitta(city);
+  const slug = slugCitta(city);
+  const stadiumName =
+    d.stadiums.find((s) => s.trim().length > 0) ?? `Stadio di ${city}`;
+  const events: StadioEvento[] = archivioItems
+    .filter((i) => i.city === city)
+    .sort((a, b) => (b.year || 0) - (a.year || 0))
+    .slice(0, 3)
+    .map((i) => ({
+      year: i.year,
+      title: i.title,
+      dateLabel: i.dateLabel,
+      result: i.result,
+    }));
+  const override = STADIO_IMMAGINI[city];
+  const visualStatus: VisualStatus = override ? "licensed" : "generated";
+  const imageUrl = visualStatus === "licensed" ? stadioFotoUrl(city) : null;
+  const visualUrl = visualStadioUrl(city);
+  const visualLabel =
+    visualStatus === "licensed"
+      ? "Foto ufficiale"
+      : "Visual istituzionale";
+  const imageAlt =
+    visualStatus === "licensed"
+      ? `${stadiumName} — ${city}`
+      : `Visual istituzionale ispirato a ${city}`;
+  return {
+    city,
+    slug,
+    stadiumName,
+    matchesCount: d.count,
+    latestYear: d.lastYear || null,
+    events,
+    imageUrl,
+    visualUrl,
+    imageAlt,
+    visualStatus,
+    visualLabel,
+    imageCredit: override?.credit ?? "",
+    imageLicense: override?.license ?? "",
+  };
+}
+
+export function dettagliCitta(city: string): DettagliCitta {
+  const items = archivioItems
+    .filter((i) => i.city === city)
+    .sort((a, b) => a.year - b.year);
+  const years = items.map((i) => i.year).filter((y) => y > 0);
+  const stadiums = Array.from(new Set(items.map((i) => i.stadium)));
+  const ultimo = items[items.length - 1] ?? null;
+  return {
+    city,
+    count: items.length,
+    firstYear: years.length ? Math.min(...years) : 0,
+    lastYear: years.length ? Math.max(...years) : 0,
+    stadiums,
+    ultimoEvento: ultimo
+      ? {
+          title: ultimo.title,
+          year: ultimo.year,
+          dateLabel: ultimo.dateLabel,
+          result: ultimo.result,
+        }
+      : null,
+    foto: CITTA_FOTO[city] ?? null,
+  };
+}

@@ -190,6 +190,40 @@ body {
   }
 }
 
+/* --- Mappa del cuore: pulse dei pallini città --- */
+.pin-pulse {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: pinPulse 2.6s ease-in-out infinite;
+}
+.pin-pulse-strong {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: pinPulseStrong 1.4s ease-in-out infinite;
+}
+@keyframes pinPulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.35);
+    opacity: 0.15;
+  }
+}
+@keyframes pinPulseStrong {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.75;
+  }
+  50% {
+    transform: scale(1.7);
+    opacity: 0.1;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -201,7 +235,9 @@ body {
   }
   .hero-glow,
   .hero-beams,
-  .tunnel-rays {
+  .tunnel-rays,
+  .pin-pulse,
+  .pin-pulse-strong {
     animation: none !important;
   }
 }

@@ -8,7 +8,7 @@ import {
   DECENNI,
   type ArchivioItem,
 } from "@/lib/archivio-view";
-import { MappaItalia } from "./MappaItalia";
+import { MappaCuore } from "@/components/shared/MappaCuore";
 
 const CATEGORIA_STILI: Record<
   ArchivioItem["categoria"]["tone"],
@@ -113,6 +113,7 @@ function CardArchivio({ item }: { item: ArchivioItem }) {
 export function ArchivioEsplora() {
   const [query, setQuery] = useState("");
   const [decennio, setDecennio] = useState<string>("tutti");
+  const [hoverCitta, setHoverCitta] = useState<string | null>(null);
   const listaRef = useRef<HTMLDivElement>(null);
 
   const places = useMemo(() => cittaGiocate(archivioItems), []);
@@ -150,10 +151,12 @@ export function ArchivioEsplora() {
       <section className="bg-notte py-16 text-white sm:py-20">
         <div className="mx-auto grid w-full max-w-6xl items-center gap-10 px-6 sm:px-8 lg:grid-cols-[auto_1fr]">
           <div className="mx-auto w-full max-w-[380px]">
-            <MappaItalia
+            <MappaCuore
               places={places}
               selected={cittaSelezionata}
               onSelect={selezionaCitta}
+              hoveredCity={hoverCitta}
+              onHover={setHoverCitta}
             />
           </div>
           <div>
@@ -174,10 +177,15 @@ export function ArchivioEsplora() {
                   <button
                     type="button"
                     onClick={() => selezionaCitta(p.city)}
-                    className={`rounded-full border px-3.5 py-1.5 text-xs font-medium transition-colors ${
-                      cittaSelezionata === p.city
-                        ? "border-oro bg-oro text-oro-scuro"
-                        : "border-white/20 text-white/75 hover:border-oro/60 hover:text-oro"
+                    onMouseEnter={() => setHoverCitta(p.city)}
+                    onMouseLeave={() => setHoverCitta(null)}
+                    onFocus={() => setHoverCitta(p.city)}
+                    onBlur={() => setHoverCitta(null)}
+                    aria-pressed={cittaSelezionata === p.city}
+                    className={`whitespace-nowrap rounded-full border px-3.5 py-1.5 text-xs font-medium transition-all duration-200 ${
+                      cittaSelezionata === p.city || hoverCitta === p.city
+                        ? "border-oro bg-oro text-oro-scuro shadow-[0_0_0_4px_rgba(232,178,58,0.15)]"
+                        : "border-white/18 text-white/80 hover:border-oro/60 hover:text-oro"
                     }`}
                   >
                     {p.city} · {p.count}

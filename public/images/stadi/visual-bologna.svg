@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200" role="img" aria-label="Visual istituzionale ispirato a Bologna">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#12314a"/>
+      <stop offset="1" stop-color="#0b1d2e"/>
+    </linearGradient>
+    <linearGradient id="warm" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#E8B23A" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#E8B23A" stop-opacity="0"/>
+    </linearGradient>
+    <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#4fa9e0" stroke-opacity="0.08" stroke-width="0.6"/>
+    </pattern>
+    <style>
+      @keyframes nicPulse { 0%,100% { opacity: 0.55; } 50% { opacity: 1; } }
+      .pulse { animation: nicPulse 3.4s ease-in-out infinite; }
+      @media (prefers-reduced-motion: reduce) { .pulse { animation: none; } }
+    </style>
+  </defs>
+  <rect width="320" height="200" fill="url(#sky)"/>
+  <rect width="320" height="200" fill="url(#grid)"/>
+  <rect x="0" y="110" width="320" height="90" fill="url(#warm)"/>
+
+  <!-- Portici (serie di archi ripetuti in prospettiva) -->
+  <g fill="none" stroke="#4fa9e0" stroke-opacity="0.55" stroke-width="1.1">
+    <path d="M 20 160 L 20 128 Q 20 108 40 108 Q 60 108 60 128 L 60 160"/>
+    <path d="M 65 160 L 65 128 Q 65 108 85 108 Q 105 108 105 128 L 105 160"/>
+    <path d="M 110 160 L 110 128 Q 110 108 130 108 Q 150 108 150 128 L 150 160"/>
+    <path d="M 155 160 L 155 128 Q 155 108 175 108 Q 195 108 195 128 L 195 160"/>
+    <path d="M 200 160 L 200 128 Q 200 108 220 108 Q 240 108 240 128 L 240 160"/>
+    <path d="M 245 160 L 245 128 Q 245 108 265 108 Q 285 108 285 128 L 285 160"/>
+  </g>
+  <!-- Fascia scura oltre gli archi (interno portico) -->
+  <g fill="#0b1d2e" fill-opacity="0.55">
+    <path d="M 22 130 Q 22 110 40 110 Q 58 110 58 130 L 58 158 L 22 158 Z"/>
+    <path d="M 67 130 Q 67 110 85 110 Q 103 110 103 130 L 103 158 L 67 158 Z"/>
+    <path d="M 112 130 Q 112 110 130 110 Q 148 110 148 130 L 148 158 L 112 158 Z"/>
+    <path d="M 157 130 Q 157 110 175 110 Q 193 110 193 130 L 193 158 L 157 158 Z"/>
+    <path d="M 202 130 Q 202 110 220 110 Q 238 110 238 130 L 238 158 L 202 158 Z"/>
+    <path d="M 247 130 Q 247 110 265 110 Q 283 110 283 130 L 283 158 L 247 158 Z"/>
+  </g>
+  <!-- Terreno e due torri astratte sullo sfondo -->
+  <g stroke="#E8B23A" stroke-opacity="0.55" stroke-width="1" fill="none">
+    <line x1="288" y1="102" x2="288" y2="60"/>
+    <line x1="298" y1="102" x2="298" y2="72"/>
+  </g>
+  <line x1="20" y1="176" x2="300" y2="176" stroke="#4fa9e0" stroke-opacity="0.45" stroke-width="1"/>
+  <circle cx="288" cy="60" r="3" fill="#E8B23A" class="pulse"/>
+  <line x1="0" y1="0.5" x2="320" y2="0.5" stroke="#E8B23A" stroke-opacity="0.4" stroke-width="1"/>
+</svg>

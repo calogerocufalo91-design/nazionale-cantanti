@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200" role="img" aria-label="Visual istituzionale ispirato a L'Aquila">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#12314a"/>
+      <stop offset="1" stop-color="#0b1d2e"/>
+    </linearGradient>
+    <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#4fa9e0" stroke-opacity="0.08" stroke-width="0.6"/>
+    </pattern>
+    <style>
+      @keyframes nicPulse { 0%,100% { opacity: 0.55; } 50% { opacity: 1; } }
+      .pulse { animation: nicPulse 3.4s ease-in-out infinite; }
+      @media (prefers-reduced-motion: reduce) { .pulse { animation: none; } }
+    </style>
+  </defs>
+  <rect width="320" height="200" fill="url(#sky)"/>
+  <rect width="320" height="200" fill="url(#grid)"/>
+
+  <!-- Catena montuosa acuta sullo sfondo (astratta) -->
+  <g fill="#4fa9e0" fill-opacity="0.10">
+    <path d="M 0 120 L 40 96 L 70 108 L 100 72 L 140 100 L 170 68 L 200 96 L 230 72 L 260 100 L 300 82 L 320 96 L 320 200 L 0 200 Z"/>
+  </g>
+  <g fill="#4fa9e0" fill-opacity="0.18">
+    <path d="M 0 140 L 55 116 L 90 130 L 130 98 L 170 122 L 210 96 L 250 124 L 290 106 L 320 122 L 320 200 L 0 200 Z"/>
+  </g>
+  <g fill="none" stroke="#4fa9e0" stroke-opacity="0.5" stroke-width="1">
+    <path d="M 0 140 L 55 116 L 90 130 L 130 98 L 170 122 L 210 96 L 250 124 L 290 106 L 320 122"/>
+  </g>
+  <!-- Neve stilizzata sulle cime -->
+  <g fill="none" stroke="#ffffff" stroke-opacity="0.28" stroke-width="0.8">
+    <path d="M 122 108 L 130 98 L 138 108"/>
+    <path d="M 202 106 L 210 96 L 218 106"/>
+    <path d="M 282 116 L 290 106 L 298 116"/>
+  </g>
+  <!-- Piccola valle centrale con luce oro -->
+  <line x1="20" y1="172" x2="300" y2="172" stroke="#4fa9e0" stroke-opacity="0.45" stroke-width="1"/>
+  <circle cx="160" cy="172" r="3.6" fill="#E8B23A" class="pulse"/>
+  <circle cx="160" cy="172" r="14" fill="#E8B23A" fill-opacity="0.16"/>
+  <!-- Aquila stilizzata astratta (due archi V, non simbolo) -->
+  <g stroke="#E8B23A" stroke-opacity="0.55" stroke-width="1" fill="none">
+    <path d="M 148 54 Q 158 46 168 54"/>
+    <path d="M 152 58 Q 158 52 164 58"/>
+  </g>
+  <line x1="0" y1="0.5" x2="320" y2="0.5" stroke="#E8B23A" stroke-opacity="0.4" stroke-width="1"/>
+</svg>

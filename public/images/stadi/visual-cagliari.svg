@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200" role="img" aria-label="Visual istituzionale ispirato a Cagliari">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#12314a"/>
+      <stop offset="1" stop-color="#0b1d2e"/>
+    </linearGradient>
+    <radialGradient id="sun" cx="0.25" cy="0.55" r="0.4">
+      <stop offset="0" stop-color="#E8B23A" stop-opacity="0.5"/>
+      <stop offset="1" stop-color="#E8B23A" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4fa9e0" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#4fa9e0" stop-opacity="0.06"/>
+    </linearGradient>
+    <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#4fa9e0" stroke-opacity="0.08" stroke-width="0.6"/>
+    </pattern>
+    <style>
+      @keyframes nicPulse { 0%,100% { opacity: 0.55; } 50% { opacity: 1; } }
+      .pulse { animation: nicPulse 3.4s ease-in-out infinite; }
+      @media (prefers-reduced-motion: reduce) { .pulse { animation: none; } }
+    </style>
+  </defs>
+  <rect width="320" height="200" fill="url(#sky)"/>
+  <rect width="320" height="200" fill="url(#grid)"/>
+  <rect width="320" height="200" fill="url(#sun)"/>
+
+  <!-- Sole basso a sinistra -->
+  <circle cx="82" cy="112" r="34" fill="#E8B23A" fill-opacity="0.28"/>
+  <circle cx="82" cy="112" r="16" fill="#E8B23A" fill-opacity="0.45" class="pulse"/>
+
+  <!-- Silhouette costiera collinare -->
+  <g fill="#4fa9e0" fill-opacity="0.16">
+    <path d="M 0 138 Q 60 122 130 138 Q 200 152 260 130 Q 300 122 320 132 L 320 168 L 0 168 Z"/>
+  </g>
+  <g fill="none" stroke="#4fa9e0" stroke-opacity="0.4" stroke-width="0.9">
+    <path d="M 0 138 Q 60 122 130 138 Q 200 152 260 130 Q 300 122 320 132"/>
+  </g>
+
+  <!-- Mare -->
+  <rect x="0" y="168" width="320" height="32" fill="url(#sea)"/>
+  <g stroke="#4fa9e0" stroke-opacity="0.35" stroke-width="0.8" fill="none">
+    <path d="M 0 178 Q 40 174 80 178 T 160 178 T 240 178 T 320 178"/>
+    <path d="M 0 190 Q 40 186 80 190 T 160 190 T 240 190 T 320 190" stroke-opacity="0.22"/>
+  </g>
+
+  <!-- Piccola vela astratta -->
+  <g stroke="#E8B23A" stroke-opacity="0.6" stroke-width="0.9" fill="#E8B23A" fill-opacity="0.15">
+    <path d="M 220 170 L 220 148 L 236 170 Z"/>
+    <line x1="220" y1="170" x2="220" y2="176"/>
+  </g>
+  <line x1="0" y1="0.5" x2="320" y2="0.5" stroke="#E8B23A" stroke-opacity="0.4" stroke-width="1"/>
+</svg>

@@ -232,10 +232,14 @@ export function ArchivioEsplora() {
         </div>
       </section>
 
-      {/* Barra filtri sticky */}
+      {/* Barra filtri sticky — si incolla ESATTAMENTE sotto l'header assestato
+          (h-16 = 4rem) tenendo conto della safe-area del notch: così niente
+          buco in cui trapelano le card, e su iPhone col notch l'header non copre
+          più la riga degli anni. Sfondo opaco per non far "fantasmare" le card
+          sotto la barra. */}
       <div
         ref={listaRef}
-        className="sticky top-20 z-30 border-y border-notte/10 bg-carta/95 py-3 backdrop-blur-md"
+        className="sticky top-[calc(4rem+env(safe-area-inset-top))] z-40 border-y border-notte/10 bg-carta py-3 shadow-[0_6px_16px_-12px_rgba(11,29,46,0.5)]"
       >
         <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center gap-3 px-6 sm:px-8">
           <div

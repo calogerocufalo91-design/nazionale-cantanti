@@ -30,7 +30,7 @@ export function Header() {
       className={cn(
         "fixed inset-x-0 top-0 z-50 pt-[env(safe-area-inset-top)] transition-[background-color,box-shadow] duration-500 ease-out",
         scrolled
-          ? "bg-notte/95"
+          ? "bg-notte"
           : "bg-transparent",
         settled
           ? "shadow-[0_10px_30px_-20px_rgba(0,0,0,0.55),inset_0_-1px_0_rgba(255,255,255,0.06)]"

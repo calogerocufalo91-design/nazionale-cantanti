@@ -57,7 +57,12 @@ export function MobileMenu({
     <AnimatePresence>
       {open && (
         <motion.div
-          className="fixed inset-0 z-[70] flex flex-col overflow-y-auto bg-notte text-white"
+          // data-lenis-prevent: senza questo Lenis intercetta il touch e blocca
+          // lo scroll col dito dentro il menu (il contenuto supera l'altezza
+          // dello schermo sui telefoni bassi). overscroll-contain evita che lo
+          // scroll "sfondi" sulla pagina dietro.
+          data-lenis-prevent
+          className="fixed inset-0 z-[70] flex touch-pan-y flex-col overflow-y-auto overscroll-contain bg-notte text-white"
           initial={reduce ? undefined : { clipPath: "circle(0% at 90% 6%)" }}
           animate={reduce ? undefined : { clipPath: "circle(150% at 90% 6%)" }}
           exit={reduce ? undefined : { clipPath: "circle(0% at 90% 6%)" }}

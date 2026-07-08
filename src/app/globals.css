@@ -13,6 +13,31 @@
   --font-sans: var(--font-public), ui-sans-serif, system-ui, sans-serif;
   --font-serif: var(--font-libre), ui-serif, Georgia, serif;
   --font-cond: var(--font-barlow), var(--font-public), sans-serif;
+
+  /* --- Scala tipografica fluida -----------------------------------------
+     Un unico sistema di titoli e numeri, con rapporti armonici (~1.22) e
+     clamp() responsive: nessun valore "gridato". Ogni ruolo ha una sola
+     dimensione — scala da sola dal mobile al desktop, senza cascate di
+     override (sm:/md:/lg:). L'obiettivo è eleganza sobria.
+     Riferimenti (min → max, in px): lead 17→19 · title 23→30 ·
+     heading 27→38 · display 32→48 · hero 39→68 · stat 34→46. */
+  --text-lead: clamp(1.0625rem, 1.01rem + 0.28vw, 1.2rem);
+  --text-lead--line-height: 1.6;
+
+  --text-title: clamp(1.45rem, 1.28rem + 0.85vw, 1.875rem);
+  --text-title--line-height: 1.2;
+
+  --text-heading: clamp(1.7rem, 1.42rem + 1.4vw, 2.375rem);
+  --text-heading--line-height: 1.12;
+
+  --text-display: clamp(2rem, 1.58rem + 2.1vw, 3rem);
+  --text-display--line-height: 1.08;
+
+  --text-hero: clamp(2.45rem, 1.62rem + 4.15vw, 4.25rem);
+  --text-hero--line-height: 1.0;
+
+  --text-stat: clamp(2.15rem, 1.72rem + 2.15vw, 2.875rem);
+  --text-stat--line-height: 1.0;
 }
 
 /* Lo smooth scrolling è gestito da Lenis (vedi SmoothScroll): il CSS
@@ -68,16 +93,27 @@ body {
   }
 }
 
-/* --- Hero: griglia prospettica sul fondo --- */
-.hero-grid {
+/* --- Hero: alone-riflettore + grana fine (al posto della griglia) --- */
+/* Cono di luce morbido dietro il titolo: dà profondità e "palcoscenico". */
+.hero-spot {
   position: absolute;
   inset: 0;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-  background-size: 64px 64px;
-  mask-image: radial-gradient(circle at 50% 45%, #000 0%, transparent 72%);
-  -webkit-mask-image: radial-gradient(circle at 50% 45%, #000 0%, transparent 72%);
+  pointer-events: none;
+  background: radial-gradient(
+    58% 62% at 50% 42%,
+    rgba(255, 255, 255, 0.07),
+    transparent 70%
+  );
+}
+
+/* Grana fine premium: texture fotografica, non un pattern "tech". */
+.hero-grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.5;
+  mix-blend-mode: soft-light;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 /* --- Hero: fasci di luce da stadio che spazzano il cielo --- */
@@ -221,6 +257,56 @@ body {
   50% {
     transform: scale(1.7);
     opacity: 0.1;
+  }
+}
+
+/* ============================================================
+   MOBILE / TOUCH — fondamenta trasversali
+   ============================================================ */
+
+/* Nessuno scroll orizzontale accidentale. `clip` (non `hidden`) non crea un
+   contenitore di scroll: preserva position: sticky/fixed (mappa, header). */
+html {
+  overflow-x: clip;
+}
+body {
+  overflow-x: clip;
+  /* iOS: niente flash grigio al tap — gli stati :active/:focus li curiamo noi. */
+  -webkit-tap-highlight-color: transparent;
+  /* iOS: nessun auto-ingrandimento del testo ruotando in landscape. */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* Immagini e media: mai più larghi del loro contenitore. */
+img,
+svg,
+video {
+  max-width: 100%;
+}
+
+/* iOS Safari zooma l'intero layout quando un campo con font < 16px riceve il
+   focus. Su mobile forziamo almeno 16px su tutti i controlli di input. */
+@media (max-width: 640px) {
+  input,
+  textarea,
+  select {
+    font-size: 16px;
+  }
+}
+
+/* Le ancore (#mappa-cuore, …) non devono finire nascoste sotto l'header fisso. */
+[id] {
+  scroll-margin-top: 5.5rem;
+}
+
+/* Perf mobile: le luci animate della hero (blur + filtri) sono costose da
+   ripitturare a ogni frame su telefono. Sotto i 640px restano statiche:
+   l'atmosfera rimane, sparisce il costo GPU continuo. */
+@media (max-width: 640px) {
+  .hero-glow,
+  .hero-beams {
+    animation: none;
   }
 }
 

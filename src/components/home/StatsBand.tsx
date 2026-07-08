@@ -30,10 +30,10 @@ export function StatsBand() {
               delay={i * 0.08}
               className="px-4 py-8 text-center sm:py-2"
             >
-              <div className="font-cond text-6xl font-semibold leading-none text-oro sm:text-7xl">
+              <div className="font-cond text-stat font-semibold text-oro">
                 <AnimatedCounter to={stat.value} suffix={stat.suffix} />
               </div>
-              <p className="mt-4 text-sm uppercase tracking-[0.2em] text-white/70">
+              <p className="mt-3 text-sm uppercase tracking-[0.2em] text-white/70">
                 {stat.label}
               </p>
             </ScrollReveal>

@@ -15,7 +15,7 @@ type StadioPanelProps = {
 };
 
 /**
- * Pannello dettagli stadio: grande, elegante, con visual istituzionale in
+ * Pannello dettagli stadio: grande, elegante, con visual editoriale in
  * alto e informazioni sotto. Progettato per stare in una zona dedicata del
  * layout — NON è un tooltip che si sovrappone ad altri contenuti.
  */
@@ -34,7 +34,12 @@ export function StadioPanel({
       aria-live="polite"
       aria-atomic
     >
-      <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-notte-800/85 to-notte/95 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.7)] ring-1 ring-oro/10 backdrop-blur-xl">
+      {/* Glow morbido attorno alla card */}
+      <span
+        aria-hidden
+        className="pointer-events-none absolute -inset-1 rounded-[28px] bg-gradient-to-b from-oro/12 via-transparent to-azzurro/12 opacity-70 blur-lg"
+      />
+      <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-notte-800 to-notte shadow-[0_40px_90px_-25px_rgba(0,0,0,0.75)] ring-1 ring-oro/15">
         {/* Cornice oro sottile decorativa */}
         <span
           aria-hidden
@@ -90,24 +95,24 @@ function StadioPanelBody({
 
   return (
     <>
-      {/* Visual istituzionale in alto */}
-      <div className="relative aspect-[16/10] w-full overflow-hidden bg-notte-800">
+      {/* Visual editoriale in alto — grande e scenografico */}
+      <div className="relative aspect-[16/10] w-full min-h-[240px] overflow-hidden bg-notte-800 sm:min-h-[280px]">
         {showRealPhoto ? (
           <Image
             src={info.imageUrl!}
             alt={info.imageAlt}
             fill
             sizes="(max-width: 768px) 100vw, 440px"
-            className="object-cover"
+            className="scale-[1.03] object-cover"
             onError={() => setPhotoFailed(true)}
           />
         ) : (
-          // Visual istituzionale (SVG generativo originale) — non è una foto.
+          // Visual editoriale (SVG generativo originale) — non è una foto.
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={visualSrc}
             alt={info.imageAlt}
-            className="h-full w-full object-cover"
+            className="h-full w-full scale-[1.03] object-cover"
             loading="lazy"
             onError={() => setVisualFailed(true)}
           />
@@ -115,30 +120,37 @@ function StadioPanelBody({
         {/* Gradient soft in basso per fondere con la card */}
         <div
           aria-hidden
-          className="absolute inset-0 bg-gradient-to-t from-notte/85 via-notte/10 to-transparent"
+          className="absolute inset-0 bg-gradient-to-t from-notte via-notte/25 to-transparent"
+        />
+        {/* Bordo interno elegante sopra il visual */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 rounded-t-3xl ring-1 ring-inset ring-white/10"
         />
         {/* Badge in alto a sinistra */}
         <div className="absolute left-4 top-4">
           {showRealPhoto ? (
-            <span className="rounded-full bg-oro px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-oro-scuro shadow-sm">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-oro px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-oro-scuro shadow-sm">
               Foto ufficiale
             </span>
           ) : (
-            <span className="rounded-full bg-azzurro-chiaro/15 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-azzurro-chiaro ring-1 ring-azzurro-chiaro/40 backdrop-blur">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-notte/80 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-oro ring-1 ring-oro/40">
+              <span
+                aria-hidden
+                className="inline-block h-1.5 w-1.5 rounded-full bg-oro"
+              />
               {info.visualLabel}
             </span>
           )}
         </div>
-        {/* Città in overlay in basso */}
-        <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 px-5 pb-4">
-          <div className="min-w-0">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-oro/80">
-              {info.city}
-            </p>
-            <p className="mt-1 truncate font-serif text-xl font-semibold leading-tight text-white sm:text-2xl">
-              {info.stadiumName}
-            </p>
-          </div>
+        {/* Città + stadio in overlay in basso */}
+        <div className="absolute inset-x-0 bottom-0 px-5 pb-4">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-oro/85">
+            {info.city}
+          </p>
+          <p className="mt-1 font-serif text-2xl font-semibold leading-tight text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)] sm:text-[26px]">
+            {info.stadiumName}
+          </p>
         </div>
       </div>
 
@@ -188,8 +200,12 @@ function StadioPanelBody({
 
         {/* Nota rappresentazione / crediti */}
         {!showRealPhoto ? (
-          <p className="mt-5 border-t border-white/8 pt-3 text-[11px] italic leading-snug text-white/45">
-            Illustrazione istituzionale · rappresentazione non fotografica.
+          <p className="mt-5 flex items-center gap-2 border-t border-white/8 pt-3 text-[11px] italic leading-snug text-white/45">
+            <span
+              aria-hidden
+              className="inline-block h-1 w-1 shrink-0 rounded-full bg-oro/50"
+            />
+            Rappresentazione editoriale non fotografica.
           </p>
         ) : info.imageCredit || info.imageLicense ? (
           <p className="mt-5 border-t border-white/8 pt-3 text-[11px] leading-snug text-white/55">
@@ -250,7 +266,7 @@ function StadioPanelEmpty({
       </dl>
 
       <p className="mt-6 text-[11px] italic leading-snug text-white/40">
-        Illustrazioni istituzionali · rappresentazioni non fotografiche.
+        Rappresentazioni editoriali non fotografiche.
       </p>
     </div>
   );

@@ -263,14 +263,14 @@ export function stadioFotoUrl(city: string): string {
 //   1) Salva il file in public/images/stadi/stadio-<slug>.jpg (o .webp)
 //   2) Aggiungi qui una voce con status "licensed" e, se serve, credit + license.
 //
-// Ogni città ha di default un "visual istituzionale" (SVG generativo originale,
+// Ogni città ha di default un "visual editoriale" (SVG generativo originale,
 // non fotografico), non una foto reale — la card userà quello finché non
 // arriva una foto autorizzata.
 export type VisualStatus = "generated" | "licensed" | "missing";
 
 // Elenco città per cui esiste un visual generativo dedicato in
 // public/images/stadi/visual-<slug>.svg. Le città non elencate qui ricevono
-// automaticamente placeholder-stadio.svg come visual istituzionale generico.
+// automaticamente placeholder-stadio.svg come visual editoriale generico.
 const VISUAL_DEDICATI = new Set<string>([
   "Roma",
   "Torino",
@@ -317,11 +317,11 @@ export type StadioInfo = {
   events: StadioEvento[];
   // Foto reale autorizzata (solo se visualStatus === "licensed").
   imageUrl: string | null;
-  // Visual istituzionale/generativo di fallback: sempre valorizzato.
+  // Visual editoriale/generativo di fallback: sempre valorizzato.
   visualUrl: string;
   imageAlt: string;
   visualStatus: VisualStatus;
-  // Etichetta del badge sulla card ("Foto ufficiale", "Visual istituzionale", …).
+  // Etichetta del badge sulla card ("Foto ufficiale", "Visual editoriale", …).
   visualLabel: string;
   imageCredit: string;
   imageLicense: string;
@@ -347,13 +347,11 @@ export function stadioInfo(city: string): StadioInfo {
   const imageUrl = visualStatus === "licensed" ? stadioFotoUrl(city) : null;
   const visualUrl = visualStadioUrl(city);
   const visualLabel =
-    visualStatus === "licensed"
-      ? "Foto ufficiale"
-      : "Visual istituzionale";
+    visualStatus === "licensed" ? "Foto ufficiale" : "Visual editoriale";
   const imageAlt =
     visualStatus === "licensed"
       ? `${stadiumName} — ${city}`
-      : `Visual istituzionale ispirato a ${city}`;
+      : `Visual editoriale originale ispirato all'atmosfera di uno stadio a ${city}`;
   return {
     city,
     slug,

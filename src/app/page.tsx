@@ -1,10 +1,10 @@
 import { Hero } from "@/components/home/Hero";
 import { Manifesto } from "@/components/home/Manifesto";
+import { NextEvent } from "@/components/home/NextEvent";
+import { StoriaSection } from "@/components/home/StoriaSection";
 import { MappaCuoreSection } from "@/components/home/MappaCuoreSection";
 import { StatsBand } from "@/components/home/StatsBand";
-import { HistoryPreview } from "@/components/home/HistoryPreview";
 import { SquadPreview } from "@/components/home/SquadPreview";
-import { NextEvent } from "@/components/home/NextEvent";
 import { SocialFeed } from "@/components/home/SocialFeed";
 import { PartnersStrip } from "@/components/home/PartnersStrip";
 import { DonateClimax } from "@/components/home/DonateClimax";
@@ -12,12 +12,21 @@ import { DonateClimax } from "@/components/home/DonateClimax";
 export default function Home() {
   return (
     <>
+      {/* Hero / Intro principale */}
       <Hero />
       <Manifesto />
-      <MappaCuoreSection />
-      <StatsBand />
-      <HistoryPreview />
+
+      {/* Prossimo Evento */}
       <NextEvent />
+
+      {/* Storia — breve ponte verso la Mappa */}
+      <StoriaSection />
+
+      {/* La Mappa del Cuore */}
+      <MappaCuoreSection />
+
+      {/* Altre sezioni */}
+      <StatsBand />
       <SocialFeed />
       <SquadPreview />
       <PartnersStrip />

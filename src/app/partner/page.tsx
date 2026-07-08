@@ -75,13 +75,13 @@ export default function PartnerPage() {
         <Container>
           <div className="grid gap-10 text-center sm:grid-cols-2 sm:gap-6 lg:grid-cols-4 lg:divide-x lg:divide-white/10">
             <ScrollReveal className="px-4">
-              <p className="font-cond text-5xl font-semibold text-oro">1981</p>
+              <p className="font-cond text-stat font-semibold text-oro">1981</p>
               <p className="mt-3 text-sm uppercase tracking-[0.18em] text-white/70">
                 l&apos;anno in cui tutto è iniziato
               </p>
             </ScrollReveal>
             <ScrollReveal delay={0.07} className="px-4">
-              <p className="font-cond text-5xl font-semibold text-oro">
+              <p className="font-cond text-stat font-semibold text-oro">
                 <AnimatedCounter to={35} suffix="ª" />
               </p>
               <p className="mt-3 text-sm uppercase tracking-[0.18em] text-white/70">
@@ -89,7 +89,7 @@ export default function PartnerPage() {
               </p>
             </ScrollReveal>
             <ScrollReveal delay={0.14} className="px-4">
-              <p className="font-cond text-5xl font-semibold text-oro">
+              <p className="font-cond text-stat font-semibold text-oro">
                 <AnimatedCounter to={640} suffix="+" />
               </p>
               <p className="mt-3 text-sm uppercase tracking-[0.18em] text-white/70">
@@ -97,7 +97,7 @@ export default function PartnerPage() {
               </p>
             </ScrollReveal>
             <ScrollReveal delay={0.21} className="px-4">
-              <p className="font-cond text-5xl font-semibold text-oro">Rai 1</p>
+              <p className="font-cond text-stat font-semibold text-oro">Rai 1</p>
               <p className="mt-3 text-sm uppercase tracking-[0.18em] text-white/70">
                 la diretta del prossimo evento
               </p>

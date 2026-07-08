@@ -23,7 +23,7 @@ export function SectionTitle({
       )}
       <Tag
         className={cn(
-          "mt-3 font-serif text-3xl font-semibold leading-[1.1] sm:text-4xl md:text-5xl",
+          "mt-3 font-serif text-heading font-semibold",
           light ? "text-white" : "text-notte",
         )}
       >

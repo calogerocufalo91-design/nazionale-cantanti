@@ -38,10 +38,11 @@ export function Hero() {
       ref={ref}
       className="relative flex min-h-[100svh] items-center overflow-hidden bg-notte"
     >
-      {/* luci da stadio: bagliori morbidi + fasci che spazzano il cielo */}
+      {/* luci da stadio: bagliori morbidi + cono riflettore + fasci + grana */}
       <div className="hero-glow" aria-hidden />
-      <div className="hero-grid" aria-hidden />
+      <div className="hero-spot" aria-hidden />
       <div className="hero-beams" aria-hidden />
+      <div className="hero-grain" aria-hidden />
       <div
         aria-hidden
         className="absolute inset-0 bg-gradient-to-t from-notte via-transparent to-notte/40"
@@ -60,7 +61,7 @@ export function Hero() {
           dal {site.foundingYear} · {site.name}
         </motion.p>
 
-        <h1 className="mt-6 font-serif text-5xl font-semibold leading-[0.98] text-white sm:text-7xl md:text-8xl">
+        <h1 className="mt-6 font-serif text-hero font-semibold text-white">
           {LINES.map((line, i) => (
             <span key={line} className="block overflow-hidden pb-[0.08em]">
               <motion.span
@@ -91,10 +92,10 @@ export function Hero() {
           initial={reduce ? undefined : { opacity: 0, y: 20 }}
           animate={reduce ? undefined : { opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.9 }}
-          className="mt-8 max-w-xl text-lg text-white/70"
+          className="mt-8 max-w-xl text-lead text-white/70"
         >
-          Sport, spettacolo e solidarietà: i cantanti italiani uniti per
-          trasformare una partita in un gesto concreto di aiuto.
+          Sport, spettacolo e solidarietà: da oltre quarant&apos;anni i cantanti
+          italiani riempiono gli stadi per una buona causa.
         </motion.p>
 
         <motion.div
@@ -107,7 +108,7 @@ export function Hero() {
             Dona ora
           </MagneticButton>
           <MagneticButton href="/la-storia" variant="ghost">
-            Scopri la storia
+            La nostra storia
           </MagneticButton>
         </motion.div>
       </motion.div>

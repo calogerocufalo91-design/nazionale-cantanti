@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import type { CittaGiocata } from "@/lib/archivio-view";
 
 // Sagoma STILIZZATA dell'Italia (poligono semplificato, non cartografia esatta)
@@ -171,77 +171,40 @@ export function MappaCuore({
           ))}
         </g>
 
-        {places.map((p, i) => {
-          const [cx, cy] = project(p.lon, p.lat);
-          const r = 4 + Math.min(p.count, 8) * 1.1;
-          const isActive = activeCity === p.city;
-
-          return (
-            <motion.g
-              key={p.city}
-              initial={reduce ? false : { opacity: 0, scale: 0.4 }}
-              whileInView={reduce ? undefined : { opacity: 1, scale: 1 }}
-              viewport={{ once: true, margin: "-60px" }}
-              transition={{
-                delay: reduce ? 0 : Math.min(i * 0.04, 1),
-                type: "spring",
-                stiffness: 240,
-                damping: 20,
-              }}
-              style={{ transformOrigin: `${cx}px ${cy}px` }}
-            >
-              {/* Ring esterno morbido */}
-              <circle
+        {/* Ordine di disegno invertito: `places` è ordinato per numero di
+            eventi DECRESCENTE, quindi disegnando dall'ultimo al primo le città
+            più importanti (marker più grande) finiscono SOPRA nei cluster fitti
+            e vincono il tap. Le poche città minori sovrapposte restano
+            raggiungibili dalle pillole sotto la mappa. Il marker attivo è sempre
+            l'ultimo disegnato → sopra a tutti. */}
+        {places
+          .map((p, i) => ({ p, i }))
+          .sort((a, b) => {
+            if (activeCity === a.p.city) return 1;
+            if (activeCity === b.p.city) return -1;
+            return b.i - a.i; // count crescente = più importante sopra
+          })
+          .map(({ p, i }) => {
+            const [cx, cy] = project(p.lon, p.lat);
+            // Raggio visuale generoso: puntino ben visibile (≈10px) anche con la
+            // mappa rimpicciolita su mobile.
+            const r = 6.5 + Math.min(p.count, 8) * 1.0;
+            return (
+              <Marker
+                key={p.city}
+                city={p.city}
+                count={p.count}
                 cx={cx}
                 cy={cy}
-                r={r + (isActive ? 10 : 6)}
-                fill={
-                  isActive
-                    ? "rgba(232,178,58,0.35)"
-                    : "rgba(232,178,58,0.15)"
-                }
-                className={isActive ? "pin-pulse-strong" : "pin-pulse"}
-                pointerEvents="none"
+                r={r}
+                index={i}
+                isActive={activeCity === p.city}
+                reduce={!!reduce}
+                onActivate={onActivate}
+                onSelect={onSelect}
               />
-              {/* Marker interno */}
-              <circle
-                cx={cx}
-                cy={cy}
-                r={isActive ? r + 1.5 : r}
-                fill={isActive ? "#f4cd6b" : "#E8B23A"}
-                stroke="#0B1D2E"
-                strokeWidth="1.2"
-                filter={isActive ? "url(#marker-glow)" : undefined}
-                tabIndex={0}
-                role="button"
-                aria-label={`${p.city}: ${p.count} ${
-                  p.count === 1 ? "evento" : "eventi"
-                }`}
-                aria-pressed={isActive}
-                onClick={() => {
-                  onSelect?.(p.city);
-                  onActivate?.(p.city);
-                }}
-                onMouseEnter={() => onActivate?.(p.city)}
-                onFocus={() => onActivate?.(p.city)}
-                onBlur={() => onActivate?.(null)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    onSelect?.(p.city);
-                    onActivate?.(p.city);
-                  }
-                }}
-                className="cursor-pointer transition-transform duration-200 hover:scale-125 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-oro"
-                style={{ transformOrigin: `${cx}px ${cy}px` }}
-              >
-                <title>{`${p.city} — ${p.count} ${
-                  p.count === 1 ? "evento" : "eventi"
-                }`}</title>
-              </circle>
-            </motion.g>
-          );
-        })}
+            );
+          })}
 
         {/* Mini etichetta nome città sopra il marker attivo.
             Solo desktop e a discrezione del parent (showMarkerLabel). */}
@@ -251,13 +214,16 @@ export function MappaCuore({
           const h = labelBox?.h ?? 22;
           const flipY = cy < 50;
           const ry = flipY ? cy + 22 : cy - 22 - h;
+          // Centro dell'etichetta agganciato al marker ma vincolato dentro il
+          // viewBox: così "Torino" o le città di bordo non escono mai dalla card.
+          const lx = Math.min(Math.max(cx, w / 2 + 4), VIEW_W - w / 2 - 4);
           return (
             <g pointerEvents="none">
               {/* Linea di collegamento marker → etichetta */}
               <line
                 x1={cx}
                 y1={cy}
-                x2={cx}
+                x2={lx}
                 y2={flipY ? ry - 4 : ry + h + 4}
                 stroke="#E8B23A"
                 strokeOpacity="0.55"
@@ -265,7 +231,7 @@ export function MappaCuore({
                 strokeDasharray="2 3"
               />
               <rect
-                x={cx - w / 2}
+                x={lx - w / 2}
                 y={ry}
                 width={w}
                 height={h}
@@ -278,7 +244,7 @@ export function MappaCuore({
               />
               <text
                 ref={labelTextRef}
-                x={cx}
+                x={lx}
                 y={ry + h / 2}
                 textAnchor="middle"
                 dominantBaseline="central"
@@ -296,3 +262,111 @@ export function MappaCuore({
     </div>
   );
 }
+
+type MarkerProps = {
+  city: string;
+  count: number;
+  cx: number;
+  cy: number;
+  r: number;
+  index: number;
+  isActive: boolean;
+  reduce: boolean;
+  onActivate?: (city: string | null) => void;
+  onSelect?: (city: string) => void;
+};
+
+// Marker memoizzato: con activeCity che cambia, solo i due marker interessati
+// (quello che si attiva e quello che si disattiva) si ri-renderizzano, non tutti.
+// Solo il marker attivo pulsa: gli altri restano aloni statici — niente più 18
+// animazioni infinite che ridipingono l'SVG in continuazione.
+const Marker = memo(function Marker({
+  city,
+  count,
+  cx,
+  cy,
+  r,
+  index,
+  isActive,
+  reduce,
+  onActivate,
+  onSelect,
+}: MarkerProps) {
+  const evLabel = count === 1 ? "evento" : "eventi";
+  // Area tappabile trasparente più ampia del puntino visibile: porta TUTTA
+  // l'interazione (tap, focus, tastiera). Bilanciata: abbastanza grande da dare
+  // un buon target alle città isolate, non così grande da occludere i vicini nei
+  // cluster fitti (Milano/Monza, Emilia) — quelli restano tappabili dalle pillole.
+  const hitR = Math.max(r + 10, 20);
+  const select = () => {
+    onSelect?.(city);
+    onActivate?.(city);
+  };
+  return (
+    <motion.g
+      // Ingresso su mount (non whileInView): i marker sono SEMPRE visibili su
+      // mobile anche se l'IntersectionObserver non scatta. transform-box:
+      // fill-box + origin center rende lo scale corretto anche su iOS Safari
+      // (prima l'origin in px rompeva la posizione dei puntini).
+      initial={reduce ? false : { opacity: 0, scale: 0.5 }}
+      animate={reduce ? undefined : { opacity: 1, scale: 1 }}
+      transition={{
+        delay: reduce ? 0 : Math.min(index * 0.035, 0.9),
+        type: "spring",
+        stiffness: 240,
+        damping: 20,
+      }}
+      style={{ transformBox: "fill-box", transformOrigin: "center" }}
+      className="cursor-pointer"
+    >
+      {/* Ring esterno morbido — pulsa solo quando attivo (solo visuale) */}
+      <circle
+        cx={cx}
+        cy={cy}
+        r={r + (isActive ? 10 : 6)}
+        fill={isActive ? "rgba(232,178,58,0.35)" : "rgba(232,178,58,0.15)"}
+        className={isActive ? "pin-pulse-strong" : undefined}
+        pointerEvents="none"
+      />
+      {/* Marker interno (solo visuale) */}
+      <circle
+        cx={cx}
+        cy={cy}
+        r={isActive ? r + 1.5 : r}
+        fill={isActive ? "#f4cd6b" : "#E8B23A"}
+        stroke="#0B1D2E"
+        strokeWidth="1.4"
+        filter={isActive ? "url(#marker-glow)" : undefined}
+        pointerEvents="none"
+        className="transition-transform duration-200"
+      />
+      {/* Bersaglio tappabile trasparente — sopra tutto, gestisce l'interazione.
+          Su mobile è il tap a selezionare (non l'hover). onFocus/onMouseEnter
+          restano per desktop e tastiera. */}
+      <circle
+        cx={cx}
+        cy={cy}
+        r={hitR}
+        fill="transparent"
+        tabIndex={0}
+        role="button"
+        aria-label={`${city}: ${count} ${evLabel}`}
+        aria-pressed={isActive}
+        onClick={select}
+        onMouseEnter={() => onActivate?.(city)}
+        onFocus={() => onActivate?.(city)}
+        onBlur={() => onActivate?.(null)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            select();
+          }
+        }}
+        style={{ touchAction: "manipulation", outline: "none" }}
+        className="focus-visible:outline-none"
+      >
+        <title>{`${city} — ${count} ${evLabel}`}</title>
+      </circle>
+    </motion.g>
+  );
+});

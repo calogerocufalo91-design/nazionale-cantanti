@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Libre_Bodoni, Public_Sans, Barlow_Condensed } from "next/font/google";
 import "./globals.css";
 import { SkipLink } from "@/components/layout/SkipLink";
+import { ChromeGate } from "@/components/layout/ChromeGate";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ScrollProgress } from "@/components/layout/ScrollProgress";
@@ -45,8 +46,11 @@ export const metadata: Metadata = {
 };
 
 // Barra del browser mobile (Android/iOS) nel blu notte del brand.
+// `viewportFit: cover` estende il contenuto sotto notch/barra gesti e abilita
+// le variabili env(safe-area-inset-*) usate da header, menu e chat.
 export const viewport: Viewport = {
   themeColor: "#0b1d2e",
+  viewportFit: "cover",
 };
 
 export default function RootLayout({
@@ -62,15 +66,19 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-carta text-notte">
         <StructuredData />
         <SmoothScroll />
-        <IntroTunnel />
-        <SkipLink />
-        <ScrollProgress />
-        <Header />
+        <ChromeGate>
+          <IntroTunnel />
+          <SkipLink />
+          <ScrollProgress />
+          <Header />
+        </ChromeGate>
         <div id="contenuto" className="flex flex-1 flex-col">
           {children}
         </div>
-        <Footer />
-        <NicChat />
+        <ChromeGate>
+          <Footer />
+          <NicChat />
+        </ChromeGate>
       </body>
     </html>
   );

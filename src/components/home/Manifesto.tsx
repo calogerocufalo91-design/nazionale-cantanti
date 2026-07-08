@@ -10,11 +10,8 @@ export function Manifesto() {
         <TunnelReveal className="max-w-4xl">
           <span aria-hidden className="block h-px w-16 bg-oro" />
           <Kicker className="mt-6">La nostra missione</Kicker>
-          <p className="mt-6 font-serif text-2xl leading-[1.4] text-notte sm:text-3xl md:text-4xl">
+          <p className="mt-6 font-serif text-title leading-[1.35] text-notte">
             {site.mission}
-          </p>
-          <p className="mt-8 font-cond text-sm uppercase tracking-[0.25em] text-notte/40">
-            Nazionale Italiana Cantanti · dal 1981
           </p>
         </TunnelReveal>
       </Container>

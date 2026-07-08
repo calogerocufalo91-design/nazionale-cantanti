@@ -47,11 +47,11 @@ export function PageHero({
         <Breadcrumbs items={crumbs} />
         <div className="mt-8 max-w-3xl">
           {kicker && <Kicker className="text-azzurro-chiaro">{kicker}</Kicker>}
-          <h1 className="mt-3 font-serif text-4xl font-semibold leading-[1.05] sm:text-5xl md:text-6xl">
+          <h1 className="mt-3 font-serif text-display font-semibold">
             {title}
           </h1>
           {subtitle && (
-            <p className="mt-5 text-lg text-white/70">{subtitle}</p>
+            <p className="mt-5 text-lead text-white/70">{subtitle}</p>
           )}
         </div>
       </Container>

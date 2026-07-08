@@ -113,14 +113,30 @@ export function NicChat() {
 
   return (
     <>
-      {/* Pulsante flottante */}
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        aria-label={open ? "Chiudi l'assistente" : "Apri l'assistente"}
-        className="fixed bottom-5 right-5 z-[60] flex h-14 w-14 items-center justify-center rounded-full bg-notte text-oro shadow-lg ring-1 ring-white/15 transition-transform duration-200 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-azzurro-chiaro sm:bottom-7 sm:right-7"
-      >
-        {open ? (
+      {/* Pulsante flottante con etichetta IA appoggiata sul fumetto */}
+      <div className="fixed bottom-[calc(1.25rem+env(safe-area-inset-bottom))] right-[calc(1.25rem+env(safe-area-inset-right))] z-[60] sm:bottom-[calc(1.75rem+env(safe-area-inset-bottom))] sm:right-[calc(1.75rem+env(safe-area-inset-right))]">
+        <div className="relative">
+          <AnimatePresence>
+            {!open && (
+              <motion.span
+                aria-hidden
+                initial={reduce ? undefined : { opacity: 0, scale: 0.8 }}
+                animate={reduce ? undefined : { opacity: 1, scale: 1 }}
+                exit={reduce ? undefined : { opacity: 0, scale: 0.8 }}
+                transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+                className="pointer-events-none absolute left-1/2 top-0 z-10 -translate-x-1/2 -translate-y-1/2 select-none rounded-full border border-oro/40 bg-notte px-2 py-0.5 font-cond text-[9px] font-bold uppercase leading-none tracking-[0.2em] text-oro shadow-[0_3px_10px_-3px_rgba(0,0,0,0.6)] ring-1 ring-white/10"
+              >
+                IA
+              </motion.span>
+            )}
+          </AnimatePresence>
+          <button
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            aria-label={open ? "Chiudi l'assistente IA" : "Apri l'assistente IA"}
+            className="flex h-14 w-14 items-center justify-center rounded-full bg-notte text-oro shadow-lg ring-1 ring-white/15 transition-transform duration-200 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-azzurro-chiaro"
+          >
+            {open ? (
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden>
             <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
           </svg>
@@ -137,7 +153,9 @@ export function NicChat() {
             <circle cx="16.5" cy="12" r="1.1" fill="currentColor" />
           </svg>
         )}
-      </button>
+          </button>
+        </div>
+      </div>
 
       {/* Pannello */}
       <AnimatePresence>
@@ -149,7 +167,7 @@ export function NicChat() {
             animate={reduce ? undefined : { opacity: 1, y: 0, scale: 1 }}
             exit={reduce ? undefined : { opacity: 0, y: 24, scale: 0.98 }}
             transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed inset-x-3 bottom-24 z-[60] flex max-h-[70vh] flex-col overflow-hidden rounded-2xl border border-notte/10 bg-white shadow-2xl sm:inset-x-auto sm:right-7 sm:w-[380px]"
+            className="fixed inset-x-3 bottom-[calc(6rem+env(safe-area-inset-bottom))] z-[60] flex max-h-[70dvh] flex-col overflow-hidden rounded-2xl border border-notte/10 bg-white shadow-2xl sm:inset-x-auto sm:right-7 sm:w-[380px]"
           >
             <div className="flex items-center gap-3 bg-notte px-5 py-4 text-white">
               <span className="flex h-9 w-9 items-center justify-center rounded-full bg-oro/15 text-oro">

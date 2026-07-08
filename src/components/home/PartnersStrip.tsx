@@ -17,9 +17,15 @@ export function PartnersStrip() {
             />
             <Link
               href="/partner"
-              className="text-sm font-medium text-azzurro underline-offset-4 transition-colors hover:text-notte hover:underline"
+              className="group/link inline-flex items-center gap-1.5 text-sm font-medium text-azzurro underline-offset-4 transition-colors hover:text-notte hover:underline"
             >
-              Diventa partner →
+              Diventa partner
+              <span
+                aria-hidden
+                className="inline-block transition-transform duration-300 ease-out group-hover/link:translate-x-1.5"
+              >
+                →
+              </span>
             </Link>
           </div>
         </ScrollReveal>

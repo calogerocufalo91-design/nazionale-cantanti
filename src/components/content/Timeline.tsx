@@ -34,7 +34,7 @@ export function Timeline({
                     aria-hidden
                     className="absolute inset-0 bg-[radial-gradient(70%_90%_at_50%_110%,rgba(0,114,187,0.35),transparent_70%)]"
                   />
-                  <span className="relative font-cond text-5xl font-semibold text-oro">
+                  <span className="relative font-cond text-stat font-semibold text-oro">
                     {ed.year}
                   </span>
                   <span className="relative mt-1 text-xs uppercase tracking-[0.2em] text-white/60">

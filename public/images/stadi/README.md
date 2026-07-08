@@ -1,11 +1,14 @@
 # Visual stadi — La Mappa del Cuore
 
-Questa cartella contiene i **visual istituzionali** usati dalla card della
+Questa cartella contiene i **visual editoriali** usati dalla card della
 **Mappa del Cuore** in home e in `/archivio-partite`.
 
-I file `visual-*.svg` sono **illustrazioni originali generative**, non foto
-reali. Non riproducono in modo dettagliato stadi, monumenti, sponsor, loghi o
-persone. Sono pensati come "hero card" istituzionali coerenti col sito.
+I file `visual-*.svg` sono **rappresentazioni editoriali originali**
+(SVG generativi), **non fotografie reali**. Sono composizioni astratte in stile
+"poster sportivo notturno" — bacino stadio in prospettiva, fasci di luce dei
+fari, bagliori oro/blu, grana sottile, un tema diverso per ogni città. **Non**
+riproducono in modo realistico stadi, monumenti, sponsor, loghi o persone e
+**non devono mai essere presentati come foto ufficiali**.
 
 Se in futuro arriveranno **foto reali autorizzate** per una città, il sistema
 è già pronto a mostrarle al posto del visual generativo (vedi §4).
@@ -64,10 +67,12 @@ Visual già presenti in questa cartella:
 Per le città non elencate qui, la card mostra automaticamente
 `placeholder-stadio.svg` come visual istituzionale generico.
 
-Badge mostrato sulla card: **"Visual istituzionale"**.
-Testo: *"Illustrazione istituzionale · rappresentazione non fotografica."*
+Badge mostrato sulla card: **"Visual editoriale"**.
+Testo: *"Rappresentazione editoriale non fotografica."*
 
-Non chiamare mai questi visual "foto ufficiale" o "fotografia dello stadio".
+Non chiamare mai questi visual "foto ufficiale", "foto reale" o "fotografia
+dello stadio". Usare solo: *visual editoriale*, *rappresentazione editoriale*,
+*rappresentazione non fotografica*, *visual originale*.
 
 ## 2) Aggiungere un nuovo visual generativo
 
@@ -134,6 +139,51 @@ Dal riavvio la card mostrerà:
 Se il file dovesse mancare o non caricare, la card **torna automaticamente**
 al visual generativo (e a `placeholder-stadio.svg` come ultima rete di
 sicurezza) senza icona rotta e senza errori console.
+
+## 4-bis) Struttura dati della card (per città)
+
+La card della Mappa legge, per ogni città, un record con questa forma
+(prodotto da `stadioInfo()` in `src/lib/archivio-view.ts`):
+
+```ts
+{
+  city: "Torino",
+  slug: "torino",
+  stadiumName: "Stadio Olimpico",
+  matchesCount: 6,
+  latestYear: 2021,
+  events: [/* … */],
+  imageUrl: "",                                  // valorizzato SOLO se licensed
+  visualUrl: "/images/stadi/visual-torino.svg",  // sempre presente (fallback)
+  imageAlt: "Visual editoriale originale ispirato all'atmosfera di uno stadio a Torino",
+  visualStatus: "generated",                     // "generated" | "licensed"
+  visualLabel: "Visual editoriale",              // "Foto ufficiale" se licensed
+  imageCredit: "",
+  imageLicense: "",
+}
+```
+
+Regole applicate:
+
+- `visualStatus: "generated"` → visual editoriale originale. Badge
+  **"Visual editoriale"**, nota **"Rappresentazione editoriale non fotografica."**
+- `visualStatus: "licensed"` → foto reale autorizzata. Badge **"Foto ufficiale"**,
+  mostra **credito** e **licenza**.
+- Catena di fallback anti-immagine-rotta: foto `licensed` → se non carica usa
+  `visualUrl` → se non carica usa `placeholder-stadio.svg`. Mai icona rotta,
+  mai errore in console.
+
+Esempio del passaggio da `generated` a `licensed`:
+
+```ts
+{
+  imageUrl: "/images/stadi/stadio-roma.jpg",
+  visualStatus: "licensed",
+  visualLabel: "Foto ufficiale",
+  imageCredit: "© Nome fotografo / Ente",
+  imageLicense: "Usata con autorizzazione",
+}
+```
 
 ## 5) Esempi di credito ben scritto
 

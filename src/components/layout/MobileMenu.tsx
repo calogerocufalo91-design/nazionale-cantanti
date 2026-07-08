@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
   AnimatePresence,
   motion,
@@ -11,6 +12,7 @@ import {
 } from "framer-motion";
 import { nav, site, type NavItem } from "@/data/site";
 import { EASE_OUT } from "@/lib/motion";
+import { cn } from "@/lib/utils";
 
 const items: NavItem[] = [{ label: "Home", href: "/" }, ...nav];
 
@@ -32,6 +34,7 @@ export function MobileMenu({
   onClose: () => void;
 }) {
   const reduce = useReducedMotion();
+  const pathname = usePathname();
 
   useEffect(() => {
     if (!open) return;
@@ -65,7 +68,7 @@ export function MobileMenu({
         >
           <div className="hero-glow opacity-40" aria-hidden />
 
-          <div className="relative mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-6 sm:px-8">
+          <div className="relative mx-auto flex w-full max-w-6xl items-center justify-between px-6 pb-6 pt-[calc(1.5rem+env(safe-area-inset-top))] sm:px-8">
             <span className="font-cond text-sm uppercase tracking-[0.35em] text-azzurro-chiaro">
               Menu
             </span>
@@ -101,9 +104,32 @@ export function MobileMenu({
           >
             <ul>
               {items.map((item) => {
+                // Voce attiva: match esatto per "/" (Home), altrimenti
+                // prefix-match sull'inizio del path (es. /eventi/roma-2026
+                // resta sotto "Eventi").
+                const isActive =
+                  !item.external &&
+                  (item.href === "/"
+                    ? pathname === "/"
+                    : pathname === item.href ||
+                      pathname?.startsWith(item.href + "/"));
                 const inner = (
                   <>
-                    <span className="font-serif text-3xl font-semibold text-white transition-all duration-300 group-hover:translate-x-2 group-hover:text-azzurro-chiaro sm:text-4xl">
+                    <span
+                      aria-hidden
+                      className={cn(
+                        "block h-2 w-2 shrink-0 rounded-full transition-all duration-300",
+                        isActive
+                          ? "bg-oro shadow-[0_0_0_4px_rgba(232,178,58,0.18)]"
+                          : "scale-0 bg-oro/0",
+                      )}
+                    />
+                    <span
+                      className={cn(
+                        "font-serif text-3xl font-semibold transition-all duration-300 group-hover:translate-x-2 group-hover:text-azzurro-chiaro sm:text-4xl",
+                        isActive ? "text-oro" : "text-white",
+                      )}
+                    >
                       {item.label}
                       {item.external && (
                         <span aria-hidden className="ml-3 align-super text-lg text-oro/80">
@@ -113,7 +139,12 @@ export function MobileMenu({
                     </span>
                     <span
                       aria-hidden
-                      className="h-px flex-1 origin-left scale-x-0 bg-oro/40 transition-transform duration-300 group-hover:scale-x-100"
+                      className={cn(
+                        "h-px flex-1 origin-left bg-oro/40 transition-transform duration-300",
+                        isActive
+                          ? "scale-x-100"
+                          : "scale-x-0 group-hover:scale-x-100",
+                      )}
                     />
                   </>
                 );
@@ -135,7 +166,12 @@ export function MobileMenu({
                         {inner}
                       </a>
                     ) : (
-                      <Link href={item.href} onClick={onClose} className={cls}>
+                      <Link
+                        href={item.href}
+                        onClick={onClose}
+                        className={cls}
+                        aria-current={isActive ? "page" : undefined}
+                      >
                         {inner}
                       </Link>
                     )}
@@ -146,7 +182,7 @@ export function MobileMenu({
           </motion.nav>
 
           <motion.div
-            className="relative mx-auto w-full max-w-6xl px-6 pb-10 sm:px-8"
+            className="relative mx-auto w-full max-w-6xl px-6 pb-[calc(2.5rem+env(safe-area-inset-bottom))] sm:px-8"
             initial={reduce ? undefined : { opacity: 0, y: 20 }}
             animate={reduce ? undefined : { opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.5, ease: EASE_OUT }}
